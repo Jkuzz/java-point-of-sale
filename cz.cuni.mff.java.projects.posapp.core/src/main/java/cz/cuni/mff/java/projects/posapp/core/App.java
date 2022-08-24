@@ -1,8 +1,5 @@
 package cz.cuni.mff.java.projects.posapp.core;
 
-import cz.cuni.mff.java.projects.posapp.plugins.POSPlugin;
-
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -36,8 +33,10 @@ public class App {
         gbc.weightx = 0;  // Don't stretch sidebar with app scaling
         gbc.weighty = 1;
 
+        PluginLoader pluginLoader = new PluginLoader();
+
         MainViewPanel mainViewPanel = new MainViewPanel();
-        SidebarPanel areaPanel = new SidebarPanel(mainViewPanel);
+        SidebarPanel areaPanel = new SidebarPanel(mainViewPanel, pluginLoader.getPlugins());
 
         contentPanel.add(areaPanel, gbc);
 
