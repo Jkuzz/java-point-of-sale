@@ -21,9 +21,13 @@
     <dependencies>
         <dependency>
             <groupId>cz.cuni.mff.java</groupId>
+            <artifactId>projects.posapp.database</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>cz.cuni.mff.java</groupId>
             <artifactId>projects.posapp.core</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 

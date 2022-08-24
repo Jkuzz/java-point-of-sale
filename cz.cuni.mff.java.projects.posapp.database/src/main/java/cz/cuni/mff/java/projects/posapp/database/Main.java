@@ -13,7 +13,7 @@ public class Main {
                 ResultSet rs = db.query("select * from " + def.getTableName());
                 try {
                     while(rs.next()) {
-                        System.out.println(rs.getInt(1)+"  "+rs.getString(2)+"  "+rs.getString(3));
+                        System.out.println(rs.getString(1)+"  "+rs.getInt(2)+"  "+rs.getInt(3));
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();

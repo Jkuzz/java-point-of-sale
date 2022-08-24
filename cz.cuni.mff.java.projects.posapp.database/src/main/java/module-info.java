@@ -1,4 +1,4 @@
-module cz.cuni.mff.java.projects.posapp.booking {
+module cz.cuni.mff.java.projects.posapp.database {
     requires cz.cuni.mff.java.projects.posapp.core;
     requires java.desktop;
     requires java.sql;
