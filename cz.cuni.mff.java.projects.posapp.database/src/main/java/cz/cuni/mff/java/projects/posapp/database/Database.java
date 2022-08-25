@@ -1,30 +1,40 @@
 package cz.cuni.mff.java.projects.posapp.database;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.HashMap;
+
 
 public class Database implements AutoCloseable {
 
-    private Connection connection;
+    Connection connection;
 
-    public Database(DBUser user, DBClient client) {
+    private static Database instance;  // Singleton
+
+    public static Database getInstance(DBUser user, DBClient client) {
+        if(instance == null) {
+            instance = new Database(user);
+        }
+        client.getTableDefs().forEach(instance::verifyTable);
+        return instance;
+    }
+
+
+    Database(DBUser user) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+            return;
         }
 
         try {
-            connection = DriverManager.getConnection(
-                    user.getURL(), user.getUserName(), user.getPassword()
-            );
+            connection = DriverManager.getConnection(user.getURL(), user.getUserName(), user.getPassword());
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        client.getTableDefs().forEach(this::verifyTable);
+        System.out.println("Database instance created successfully");
     }
+
 
     /**
      * Modules requiring their unique tables will verify those tables exist in the database
@@ -43,7 +53,6 @@ public class Database implements AutoCloseable {
         tableQuery.append(" PRIMARY KEY( ")
                 .append(table.getPrimaryKey())
                 .append(" ))");
-
         try {
             Statement statement = connection.createStatement();
             statement.executeUpdate(tableQuery.toString());
@@ -52,6 +61,13 @@ public class Database implements AutoCloseable {
         }
     }
 
+
+    /**
+     * Execute the provided query string on the database connection.
+     * TODO: Stop SQL injection?
+     * @param query to execute
+     * @return Result set or null if error occurred.
+     */
     public ResultSet query(String query) {
         try {
             Statement stmt = connection.createStatement();
@@ -62,6 +78,10 @@ public class Database implements AutoCloseable {
         }
     }
 
+
+    /**
+     * Close the database connection.
+     */
     public void close() {
         try {
             connection.close();

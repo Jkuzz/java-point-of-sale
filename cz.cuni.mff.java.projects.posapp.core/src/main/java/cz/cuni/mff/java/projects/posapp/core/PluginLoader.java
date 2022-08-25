@@ -14,8 +14,8 @@ public class PluginLoader {
     }
 
     public ArrayList<POSPlugin> getPlugins() {
-       ArrayList<POSPlugin> plugins = new ArrayList<>();
-       serviceLoader.forEach(plugins::add);
-       return plugins;
+        ArrayList<POSPlugin> plugins = new ArrayList<>();
+        serviceLoader.forEach(plugins::add);  // Instantiating here
+        return plugins;
     }
 }
