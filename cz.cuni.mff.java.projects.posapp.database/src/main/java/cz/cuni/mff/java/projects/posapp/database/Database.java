@@ -32,7 +32,6 @@ public class Database implements AutoCloseable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println("Database instance created successfully");
     }
 
 

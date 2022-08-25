@@ -2,10 +2,10 @@ package cz.cuni.mff.java.projects.posapp.plugins.products;
 
 import cz.cuni.mff.java.projects.posapp.database.DBClient;
 import cz.cuni.mff.java.projects.posapp.database.DBTableDef;
-import cz.cuni.mff.java.projects.posapp.database.DevClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 
 public class ProductsClient implements DBClient {
 
