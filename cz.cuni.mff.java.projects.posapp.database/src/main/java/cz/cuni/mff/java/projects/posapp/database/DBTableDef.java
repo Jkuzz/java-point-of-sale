@@ -4,6 +4,5 @@ import java.util.HashMap;
 
 public interface DBTableDef {
     HashMap<String, String> getTableSchema();
-    String getTableName();
     String getPrimaryKey();
 }

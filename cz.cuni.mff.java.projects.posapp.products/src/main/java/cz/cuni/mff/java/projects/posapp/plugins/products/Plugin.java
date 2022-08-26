@@ -6,11 +6,14 @@ import cz.cuni.mff.java.projects.posapp.plugins.POSPlugin;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 
 
 public class Plugin implements POSPlugin {
@@ -18,9 +21,12 @@ public class Plugin implements POSPlugin {
     Database db;
     private JPanel productsPanel;
     private JPanel newProductPanel;
+    private JPanel activePanel;
+
+    private final DBClient dbClient = new ProductsClient();
 
     public Plugin() {
-        db = Database.getInstance(new DevUser(), new ProductsClient());
+        db = Database.getInstance(new DevUser(), dbClient);
     }
 
     @Override
@@ -47,6 +53,7 @@ public class Plugin implements POSPlugin {
         gbc.weighty = 0;
 
         productsPanel = makeProductsPanel();
+        activePanel = productsPanel;
         newProductPanel = makeNewProductPanel();
 
         modulePanel.setBackground(new Color(166, 160, 94));
@@ -54,6 +61,9 @@ public class Plugin implements POSPlugin {
 
         gbc.weighty = 1;
         modulePanel.add(productsPanel, gbc);
+        modulePanel.add(newProductPanel, gbc);
+        newProductPanel.setEnabled(false);
+        newProductPanel.setVisible(false);
     }
 
 
@@ -95,9 +105,27 @@ public class Plugin implements POSPlugin {
         gbc.weightx = 1;
         gbc.weighty = 1;
 
-        panel.add(new JButton("Products"), gbc);
-        panel.add(new JButton("Add new"), gbc);
+        JButton tableButton = new JButton("Products");
+        JButton newProductButton = new JButton("Add new");
+
+        tableButton.addActionListener(e -> setActivePanel(productsPanel));
+        newProductButton.addActionListener(e -> setActivePanel(newProductPanel));
+
+        panel.add(tableButton, gbc);
+        panel.add(newProductButton, gbc);
         return panel;
+    }
+
+
+    private void setActivePanel(JPanel newActivePanel) {
+        if(newActivePanel == activePanel) {
+            return;
+        }
+        activePanel.setEnabled(false);
+        activePanel.setVisible(false);
+        newActivePanel.setEnabled(true);
+        newActivePanel.setVisible(true);
+        activePanel = newActivePanel;
     }
 
 
@@ -111,10 +139,10 @@ public class Plugin implements POSPlugin {
         gbc.weightx = 1;
         gbc.weighty = 1;
 
-
         JTable productsTable = new JTable(new ProductsTableModel(db));
+        JScrollPane tableScrollPane = new JScrollPane(productsTable);
 
-        panel.add(productsTable, gbc);
+        panel.add(tableScrollPane, gbc);
         return panel;
     }
 
@@ -132,7 +160,6 @@ public class Plugin implements POSPlugin {
                 ResultSetMetaData rsmd = resultSet.getMetaData();
                 int columnsCount = rsmd.getColumnCount();
                 for (int i = 1; i <= columnsCount; i += 1) {
-                    System.out.println(rsmd.getColumnName(i));
                     this.columnNames.add(rsmd.getColumnName(i));
                 }
                 while(resultSet.next()) {
@@ -169,17 +196,79 @@ public class Plugin implements POSPlugin {
     }
 
     private JPanel makeNewProductPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());;
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(new Color(175, 175, 175));
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(15, 20, 15, 10);
+        gbc.insets = new Insets(15, 60, 15, 60);
         gbc.ipadx = 10;
         gbc.ipady = 10;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.weighty = 0;
+
+        final HashMap<String, DBTableDef> tableDefs = dbClient.getTableDefs();
+        final HashMap<String, JTextField> userInputs = new HashMap<>();
+        final DBTableDef productsDef = tableDefs.get("products");
+
+
+        productsDef.getTableSchema().forEach((name, type) -> {
+            if(name.equals(productsDef.getPrimaryKey())) {
+                return;
+            }
+            gbc.gridx = 0;
+            gbc.weightx = 0.1;
+            panel.add(new JLabel(name), gbc);
+            gbc.gridx = 1;
+            gbc.weightx = 1;
+            JTextField inputText = new JTextField();
+            if(type.contains("INTEGER")) {
+                inputText.addKeyListener(new KeyAdapter() {
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+                        super.keyTyped(e);
+                        if(!Character.isDigit(e.getKeyChar())) {
+                            e.consume();
+                        }
+                    }
+                });
+            }
+            userInputs.put(name, inputText);
+            panel.add(inputText, gbc);
+        });
+
+        JButton confirmButton = new JButton("Confirm");
+        panel.add(confirmButton, gbc);
+
+        confirmButton.addActionListener(e -> insertNewProduct(userInputs));
 
         return panel;
+    }
+
+
+    private PreparedStatement prepareInsertStatement() throws SQLException {
+        return db.prepareStatement(
+                "INSERT INTO `products` (`price`, `name`, `id`) VALUES (?, ?, NULL);"
+        );
+    }
+
+
+    private void insertNewProduct(HashMap<String, JTextField> userInputs) {
+        try(PreparedStatement preparedStatement = prepareInsertStatement()){
+            int priceInput = Integer.parseInt(userInputs.get("price").getText());
+            preparedStatement.setInt(1, priceInput);
+            preparedStatement.setString(2, userInputs.get("name").getText());
+            preparedStatement.execute();
+        } catch(SQLException e) {
+            displayDBError(e.getMessage());
+        } catch (NumberFormatException e) {
+            displayDBError("Invalid integer field input");
+        }
+    }
+
+    private void displayDBError(String message) {
+        // TODO: Report database connection error
+        System.out.println("ERROR: " + message);
     }
 }

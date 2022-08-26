@@ -1,6 +1,8 @@
 package cz.cuni.mff.java.projects.posapp.database;
 
+import java.util.HashMap;
+
 
 public interface DBClient {
-    Iterable<DBTableDef> getTableDefs();
+    HashMap<String, DBTableDef> getTableDefs();
 }

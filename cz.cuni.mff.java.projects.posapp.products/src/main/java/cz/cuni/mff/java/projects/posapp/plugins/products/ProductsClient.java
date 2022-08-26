@@ -3,16 +3,15 @@ package cz.cuni.mff.java.projects.posapp.plugins.products;
 import cz.cuni.mff.java.projects.posapp.database.DBClient;
 import cz.cuni.mff.java.projects.posapp.database.DBTableDef;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 
 public class ProductsClient implements DBClient {
 
     @Override
-    public Iterable<DBTableDef> getTableDefs() {
-        ArrayList<DBTableDef> tableDefs = new ArrayList<>();
-        tableDefs.add(new ProductsClient.ProductTableDef());
+    public HashMap<String, DBTableDef> getTableDefs() {
+        HashMap<String, DBTableDef> tableDefs = new HashMap<>();
+        tableDefs.put("products", new ProductsClient.ProductTableDef());
         return tableDefs;
     }
 
@@ -26,11 +25,6 @@ public class ProductsClient implements DBClient {
             tableCols.put("name", "VARCHAR(255) not NULL");
             tableCols.put("price", "INTEGER not NULL");
             return tableCols;
-        }
-
-        @Override
-        public String getTableName() {
-            return "products";
         }
 
         @Override

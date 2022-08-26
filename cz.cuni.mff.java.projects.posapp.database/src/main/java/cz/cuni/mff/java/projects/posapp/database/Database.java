@@ -2,6 +2,7 @@ package cz.cuni.mff.java.projects.posapp.database;
 
 import java.sql.*;
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class Database implements AutoCloseable {
@@ -14,7 +15,7 @@ public class Database implements AutoCloseable {
         if(instance == null) {
             instance = new Database(user);
         }
-        client.getTableDefs().forEach(instance::verifyTable);
+        client.getTableDefs().entrySet().forEach(instance::verifyTable);
         return instance;
     }
 
@@ -40,17 +41,17 @@ public class Database implements AutoCloseable {
      * on startup using this method. A table definition is provided and the table is guaranteed
      * to exist after calling this method.
      * TODO: stop SQL injection
-     * @param table Will request table by providing table definitions
+     * @param tableDefEntry Entry [tableName: tableDef
      */
-    public void verifyTable(DBTableDef table) {
-        HashMap<String, String> tableColumns = table.getTableSchema();
+    public void verifyTable(Map.Entry<String, DBTableDef> tableDefEntry) {
+        HashMap<String, String> tableColumns = tableDefEntry.getValue().getTableSchema();
 
-        StringBuilder tableQuery = new StringBuilder("CREATE TABLE IF NOT EXISTS " + table.getTableName() + " ( ");
+        StringBuilder tableQuery = new StringBuilder("CREATE TABLE IF NOT EXISTS " + tableDefEntry.getKey() + " ( ");
         tableColumns.forEach((column, colType) ->
                 tableQuery.append(column).append(" ").append(colType).append(", ")
         );
         tableQuery.append(" PRIMARY KEY( ")
-                .append(table.getPrimaryKey())
+                .append(tableDefEntry.getValue().getPrimaryKey())
                 .append(" ))");
         try {
             Statement statement = connection.createStatement();
@@ -75,6 +76,14 @@ public class Database implements AutoCloseable {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public PreparedStatement prepareStatement(String statement) throws SQLException {
+        return connection.prepareStatement(statement);
+    }
+
+    public void commit() throws SQLException {
+        connection.commit();
     }
 
 

@@ -7,9 +7,9 @@ import java.util.HashMap;
 public class DevClient implements DBClient{
 
     @Override
-    public Iterable<DBTableDef> getTableDefs() {
-        ArrayList<DBTableDef> tableDefs = new ArrayList<>();
-        tableDefs.add(new DevTableDef());
+    public HashMap<String, DBTableDef> getTableDefs() {
+        HashMap<String, DBTableDef> tableDefs = new HashMap<>();
+        tableDefs.put("devTable", new DevTableDef());
         return tableDefs;
     }
 
@@ -24,10 +24,6 @@ public class DevClient implements DBClient{
             return tableCols;
         }
 
-        @Override
-        public String getTableName() {
-            return "devTable";
-        }
 
         @Override
         public String getPrimaryKey() {
