@@ -64,7 +64,6 @@ public class Plugin implements POSPlugin {
         activePanel = productsPanel;
         newProductPanel = makeNewProductPanel();
 
-        modulePanel.setBackground(new Color(166, 160, 94));
         modulePanel.add(makeHeader(), gbc);
 
         gbc.weighty = 1;
