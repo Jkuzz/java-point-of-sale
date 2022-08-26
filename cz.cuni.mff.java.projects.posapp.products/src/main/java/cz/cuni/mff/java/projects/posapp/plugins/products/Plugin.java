@@ -25,6 +25,10 @@ public class Plugin implements POSPlugin {
 
     private final DBClient dbClient = new ProductsClient();
 
+
+    /**
+     * Requests the database connection singleton object.
+     */
     public Plugin() {
         db = Database.getInstance(new DevUser(), dbClient);
     }
@@ -42,6 +46,10 @@ public class Plugin implements POSPlugin {
     }
 
 
+    /**
+     * Create content for the provided module parent panel.
+     * @param modulePanel panel to insert content into
+     */
     private void makeContent(JPanel modulePanel) {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
@@ -67,6 +75,11 @@ public class Plugin implements POSPlugin {
     }
 
 
+    /**
+     * Create the plugin header.
+     * Includes the title and mode-switch buttons.
+     * @return the header panel
+     */
     private JPanel makeHeader() {
         JPanel header = new JPanel(new GridBagLayout());;
         header.setBackground(new Color(132, 213, 213));
@@ -94,6 +107,10 @@ public class Plugin implements POSPlugin {
     }
 
 
+    /**
+     * Create buttons for the header. The buttons enable switching of the currently displayed tab.
+     * @return panel with buttons
+     */
     private JPanel makeHeaderButtonsPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -117,6 +134,10 @@ public class Plugin implements POSPlugin {
     }
 
 
+    /**
+     * Set the selected panel as the displayed panel (unless it is already active).
+     * @param newActivePanel panel to display
+     */
     private void setActivePanel(JPanel newActivePanel) {
         if(newActivePanel == activePanel) {
             return;
@@ -129,6 +150,10 @@ public class Plugin implements POSPlugin {
     }
 
 
+    /**
+     * Create panel for the display of products.
+     * @return the products panel
+     */
     private JPanel makeProductsPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(new Color(175, 175, 175));
@@ -147,6 +172,11 @@ public class Plugin implements POSPlugin {
     }
 
 
+    /**
+     * Table model for the products view table.
+     * Requests all products from the database and stores them in memory.
+     * Provides accessor methods to the received data.
+     */
     static class ProductsTableModel extends AbstractTableModel {
 
         private final ArrayList<Object[]> data;
@@ -195,6 +225,12 @@ public class Plugin implements POSPlugin {
         }
     }
 
+
+    /**
+     * Create a panel for inserting a new product.
+     * Provides text-fields based on the db client table definitions.
+     * @return the panel
+     */
     private JPanel makeNewProductPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(new Color(175, 175, 175));
@@ -247,6 +283,11 @@ public class Plugin implements POSPlugin {
     }
 
 
+    /**
+     * Prepare an SQL statement to insert a new product into the database.
+     * @return the prepared statement
+     * @throws SQLException if prepareStatement() failed
+     */
     private PreparedStatement prepareInsertStatement() throws SQLException {
         return db.prepareStatement(
                 "INSERT INTO `products` (`price`, `name`, `id`) VALUES (?, ?, NULL);"
@@ -254,6 +295,10 @@ public class Plugin implements POSPlugin {
     }
 
 
+    /**
+     * Process input text fields into prepared query and send to database.
+     * @param userInputs field name: input textField
+     */
     private void insertNewProduct(HashMap<String, JTextField> userInputs) {
         try(PreparedStatement preparedStatement = prepareInsertStatement()){
             int priceInput = Integer.parseInt(userInputs.get("price").getText());
@@ -263,12 +308,46 @@ public class Plugin implements POSPlugin {
         } catch(SQLException e) {
             displayDBError(e.getMessage());
         } catch (NumberFormatException e) {
-            displayDBError("Invalid integer field input");
+            displayDBError("Invalid integer field input!");
         }
     }
 
+
+    /**
+     * Create an error label and add it to the panel.
+     * Set up a worker thread to dispose the label after some time.
+     * @param message to be displayed
+     */
     private void displayDBError(String message) {
-        // TODO: Report database connection error
-        System.out.println("ERROR: " + message);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(15, 60, 15, 60);
+        gbc.gridy = GridBagConstraints.PAGE_END;
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.weighty = 0;
+        gbc.gridwidth = 2;
+
+        JLabel errorLabel = new JLabel(message);
+        activePanel.add(errorLabel, gbc);
+        errorLabel.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        errorLabel.setForeground(new Color(255, 50, 50));
+
+        // The worker will disable the label later
+        SwingWorker<Object, Object> hideErrorWorker = new SwingWorker<>(){
+            @Override
+            protected Integer doInBackground() throws Exception {
+                Thread.sleep(10000);
+                return null;
+            }
+            @Override
+            protected void done() {
+                super.done();
+                errorLabel.setEnabled(false);
+                errorLabel.setVisible(false);
+                activePanel.remove(errorLabel);
+            }
+        };
+        hideErrorWorker.execute();
     }
 }
