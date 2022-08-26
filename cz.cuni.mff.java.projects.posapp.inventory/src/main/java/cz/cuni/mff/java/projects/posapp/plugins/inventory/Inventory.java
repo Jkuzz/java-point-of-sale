@@ -3,15 +3,18 @@ package cz.cuni.mff.java.projects.posapp.plugins.inventory;
 import cz.cuni.mff.java.projects.posapp.database.DBClient;
 import cz.cuni.mff.java.projects.posapp.database.Database;
 import cz.cuni.mff.java.projects.posapp.database.DevUser;
+import cz.cuni.mff.java.projects.posapp.plugins.DefaultComponentFactory;
 import cz.cuni.mff.java.projects.posapp.plugins.POSPlugin;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Inventory implements POSPlugin{
 
@@ -56,7 +59,14 @@ public class Inventory implements POSPlugin{
 //        activePanel = productsPanel;
 //        newProductPanel = makeNewProductPanel();
 
-        modulePanel.add(makeHeader(), gbc);
+        HashMap<String, ActionListener> headerButtonDefs = new HashMap<>();
+        headerButtonDefs.put("Inventory", null);
+        headerButtonDefs.put("Add new", null);
+
+        JPanel headerPanel = DefaultComponentFactory.makeHeader(
+                getDisplayName(), new Color(255, 160, 100), headerButtonDefs
+        );
+        modulePanel.add(headerPanel, gbc);
 
         gbc.weighty = 1;
         modulePanel.add(inventoryPanel, gbc);
@@ -65,62 +75,6 @@ public class Inventory implements POSPlugin{
 //        newProductPanel.setVisible(false);
     }
 
-    /**
-     * Create the plugin header.
-     * Includes the title and mode-switch buttons.
-     * @return the header panel
-     */
-    private JPanel makeHeader() {
-        JPanel header = new JPanel(new GridBagLayout());
-        header.setBackground(new Color(255, 160, 100));
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(5, 5, 5, 10);
-        gbc.ipadx = 20;
-        gbc.ipady = 0;
-        gbc.gridx = GridBagConstraints.RELATIVE;
-        gbc.gridy = 0;
-        gbc.weightx = 1;
-        gbc.weighty = 0;
-        gbc.anchor = GridBagConstraints.CENTER;
-
-        JLabel headerLabel = new JLabel(getDisplayName());
-        headerLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
-        header.add(headerLabel, gbc);
-
-        JPanel headerButtonsPanel = makeHeaderButtonsPanel();
-        gbc.fill = GridBagConstraints.VERTICAL;
-        gbc.anchor = GridBagConstraints.LINE_END;
-        header.add(headerButtonsPanel, gbc);
-        return header;
-    }
-
-    /**
-     * Create buttons for the header. The buttons enable switching of the currently displayed tab.
-     * @return panel with buttons
-     */
-    private JPanel makeHeaderButtonsPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.ipadx = 0;
-        gbc.ipady = 0;
-        gbc.gridx = GridBagConstraints.RELATIVE;
-        gbc.gridy = 0;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-
-        JButton tableButton = new JButton("Products");
-        JButton newProductButton = new JButton("Add new");
-
-//        tableButton.addActionListener(e -> setActivePanel(productsPanel));
-//        newProductButton.addActionListener(e -> setActivePanel(newProductPanel));
-
-        panel.add(tableButton, gbc);
-        panel.add(newProductButton, gbc);
-        return panel;
-    }
 
     /**
      * Create panel for the display of products.
