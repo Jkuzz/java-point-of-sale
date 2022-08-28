@@ -18,6 +18,7 @@ public class CircleMouseAdapter extends MouseAdapter {
 
     public CircleMouseAdapter(JPanel canvasPanel, TablesModel tablesModel) {
         this.tablesModel = tablesModel;
+        drawCircle.setOpaque(false);
         canvasPanel.setLayout(null);
         canvasPanel.add(drawCircle);
     }
