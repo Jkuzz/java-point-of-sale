@@ -11,8 +11,6 @@ import java.util.HashMap;
 
 public class Plugin implements POSPlugin {
 
-//    Database db;
-//    private final DBClient dbClient = new TablesClient();
 
     private JPanel activePanel;
     private JPanel tablesPanel;
@@ -20,15 +18,12 @@ public class Plugin implements POSPlugin {
     private JPanel canvasPanel = new JPanel();
     private MouseAdapter canvasMouseAdapter;
 
-    private TablesModel tablesModel = new TablesModel();
+    private TablesModel tablesModel = new TablesModel("tableAdded");
 
-
-    /**
-     * Requests the database connection singleton object.
-     */
     public Plugin() {
-//        db = Database.getInstance(new DevUser(), dbClient);
+        canvasPanel.setLayout(null);
     }
+
 
     @Override
     public String getDisplayName() {
@@ -39,6 +34,10 @@ public class Plugin implements POSPlugin {
     public JPanel makeMainPanel() {
         JPanel modulePanel = new JPanel(new GridBagLayout());;
         makeContent(modulePanel);
+
+        TablesDatabaseConnector databaseConnector = new TablesDatabaseConnector();
+        tablesModel.subscribe("tableAdded", databaseConnector);
+
         return modulePanel;
     }
 

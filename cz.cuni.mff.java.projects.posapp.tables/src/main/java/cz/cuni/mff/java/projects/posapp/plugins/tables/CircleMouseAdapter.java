@@ -19,18 +19,9 @@ public class CircleMouseAdapter extends MouseAdapter {
     public CircleMouseAdapter(JPanel canvasPanel, TablesModel tablesModel) {
         this.tablesModel = tablesModel;
         drawCircle.setOpaque(false);
-        canvasPanel.setLayout(null);
         canvasPanel.add(drawCircle);
     }
 
-
-    @Override
-    public void mouseClicked(MouseEvent mouseEvent) {
-    }
-
-    @Override
-    public void mousePressed(MouseEvent mouseEvent) {
-    }
 
     @Override
     public void mouseReleased(MouseEvent mouseEvent) {
@@ -53,9 +44,9 @@ public class CircleMouseAdapter extends MouseAdapter {
             drawStart = mouseEvent.getPoint();
             if(SwingUtilities.isRightMouseButton(mouseEvent)) {
                 drawingInteract = true;
-                drawCircle.setBackground(new Color(255, 107, 107));
+                drawCircle.setBackground(tablesModel.interactColor);
             } else {
-                drawCircle.setBackground(new Color(30, 30, 30));
+                drawCircle.setBackground(tablesModel.baseColor);
             }
             drawCircle.setBounds(drawStart.x, drawStart.y, 1, 1);
             drawCircle.setVisible(true);
@@ -74,5 +65,4 @@ public class CircleMouseAdapter extends MouseAdapter {
                 radius * 2
         );
     }
-
 }

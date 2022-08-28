@@ -13,24 +13,12 @@ public class RectangleMouseAdapter extends MouseAdapter {
     private Point drawStart;
 
     private final JPanel drawRectangle = new JPanel();
-//    private final JPanel canvasPanel;
     private final TablesModel tablesModel;
 
 
     public RectangleMouseAdapter(JPanel canvasPanel, TablesModel tablesModel) {
-//        this.canvasPanel = canvasPanel;
         this.tablesModel = tablesModel;
-        canvasPanel.setLayout(null);
         canvasPanel.add(drawRectangle);
-    }
-
-
-    @Override
-    public void mouseClicked(MouseEvent mouseEvent) {
-    }
-
-    @Override
-    public void mousePressed(MouseEvent mouseEvent) {
     }
 
     @Override
@@ -54,9 +42,9 @@ public class RectangleMouseAdapter extends MouseAdapter {
             drawStart = mouseEvent.getPoint();
             if(SwingUtilities.isRightMouseButton(mouseEvent)) {
                 drawingInteract = true;
-                drawRectangle.setBackground(new Color(255, 107, 107));
+                drawRectangle.setBackground(tablesModel.interactColor);
             } else {
-                drawRectangle.setBackground(new Color(30, 30, 30));
+                drawRectangle.setBackground(tablesModel.baseColor);
             }
             drawRectangle.setBounds(drawStart.x, drawStart.y, 1, 1);
             drawRectangle.setVisible(true);
@@ -73,5 +61,4 @@ public class RectangleMouseAdapter extends MouseAdapter {
                 Math.abs(currentPoint.y - drawStart.y)
         );
     }
-
 }
