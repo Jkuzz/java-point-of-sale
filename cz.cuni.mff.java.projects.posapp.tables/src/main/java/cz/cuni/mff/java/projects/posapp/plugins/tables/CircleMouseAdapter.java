@@ -6,22 +6,20 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 
-public class RectangleMouseAdapter extends MouseAdapter {
+public class CircleMouseAdapter extends MouseAdapter {
 
     private boolean drawing = false;
     private boolean drawingInteract = false;
     private Point drawStart;
 
-    private final JPanel drawRectangle = new JPanel();
-//    private final JPanel canvasPanel;
+    private final CirclePanel drawCircle = new CirclePanel();
     private final TablesModel tablesModel;
 
 
-    public RectangleMouseAdapter(JPanel canvasPanel, TablesModel tablesModel) {
-//        this.canvasPanel = canvasPanel;
+    public CircleMouseAdapter(JPanel canvasPanel, TablesModel tablesModel) {
         this.tablesModel = tablesModel;
         canvasPanel.setLayout(null);
-        canvasPanel.add(drawRectangle);
+        canvasPanel.add(drawCircle);
     }
 
 
@@ -39,10 +37,10 @@ public class RectangleMouseAdapter extends MouseAdapter {
             && mouseEvent.getButton() != MouseEvent.BUTTON3) return;
 
         drawing = false;
-        tablesModel.addTable(drawRectangle.getBounds(), drawingInteract);
+        tablesModel.addTable(drawCircle.getBounds(), drawingInteract);
         drawingInteract = false;
-        drawRectangle.setVisible(false);
-        drawRectangle.setEnabled(false);
+        drawCircle.setVisible(false);
+        drawCircle.setEnabled(false);
     }
 
     @Override
@@ -54,23 +52,25 @@ public class RectangleMouseAdapter extends MouseAdapter {
             drawStart = mouseEvent.getPoint();
             if(SwingUtilities.isRightMouseButton(mouseEvent)) {
                 drawingInteract = true;
-                drawRectangle.setBackground(new Color(255, 107, 107));
+                drawCircle.setBackground(new Color(255, 107, 107));
             } else {
-                drawRectangle.setBackground(new Color(30, 30, 30));
+                drawCircle.setBackground(new Color(30, 30, 30));
             }
-            drawRectangle.setBounds(drawStart.x, drawStart.y, 1, 1);
-            drawRectangle.setVisible(true);
-            drawRectangle.setEnabled(true);
+            drawCircle.setBounds(drawStart.x, drawStart.y, 1, 1);
+            drawCircle.setVisible(true);
+            drawCircle.setEnabled(true);
         }
 
         Point currentPoint = mouseEvent.getPoint();
-        int rectX = Math.min(currentPoint.x, drawStart.x);
-        int rectY = Math.min(currentPoint.y, drawStart.y);
+        int distX = Math.abs(currentPoint.x - drawStart.x);
+        int distY = Math.abs(currentPoint.y - drawStart.y);
+        int radius = (int)Math.sqrt( distX * distX + distY * distY);
 
-        drawRectangle.setBounds(
-                rectX, rectY,
-                Math.abs(currentPoint.x - drawStart.x),
-                Math.abs(currentPoint.y - drawStart.y)
+        drawCircle.setBounds(
+                drawStart.x - radius,
+                drawStart.y - radius,
+                radius * 2,
+                radius * 2
         );
     }
 

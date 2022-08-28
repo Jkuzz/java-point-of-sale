@@ -17,6 +17,10 @@ public class Plugin implements POSPlugin {
     private JPanel activePanel;
     private JPanel tablesPanel;
     private JPanel editPanel;
+    private JPanel canvasPanel = new JPanel();
+    private MouseAdapter canvasMouseAdapter;
+
+    private TablesModel tablesModel = new TablesModel();
 
 
     /**
@@ -72,8 +76,8 @@ public class Plugin implements POSPlugin {
 
 
     /**
-     * Create panel for the display of products.
-     * @return the products panel
+     * Create panel for the display of tables.
+     * @return the tables panel
      */
     private JPanel makeTablesPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
@@ -105,12 +109,8 @@ public class Plugin implements POSPlugin {
         gbc.weighty = 1;
         gbc.weightx = 0;
 
-        JPanel canvasPanel = new JPanel();
-
-        MouseAdapter mouseAdapter = new RectangleMouseAdapter(canvasPanel);
-        canvasPanel.addMouseListener(mouseAdapter);
-        canvasPanel.addMouseMotionListener(mouseAdapter);
-
+        MouseAdapter mouseAdapter = new RectangleMouseAdapter(canvasPanel, tablesModel);
+        changeCanvasMouseAdapter(mouseAdapter);
 
         panel.add(makePaintSidebarPanel(), gbc);
         gbc.weightx = 1;
@@ -131,12 +131,17 @@ public class Plugin implements POSPlugin {
 
         JButton rectButton = new JButton("Rect");
         JButton circleButton = new JButton("Circ");
-        JButton tableButton = new JButton("Table");
         JButton moveButton = new JButton("Move");
+
+        rectButton.addActionListener(
+                e -> changeCanvasMouseAdapter(new RectangleMouseAdapter(canvasPanel, tablesModel))
+        );
+        circleButton.addActionListener(
+                e -> changeCanvasMouseAdapter(new CircleMouseAdapter(canvasPanel, tablesModel))
+        );
 
         sidebarPanel.add(rectButton, gbc);
         sidebarPanel.add(circleButton, gbc);
-        sidebarPanel.add(tableButton, gbc);
         sidebarPanel.add(moveButton, gbc);
         return sidebarPanel;
     }
@@ -154,5 +159,18 @@ public class Plugin implements POSPlugin {
         newActivePanel.setEnabled(true);
         newActivePanel.setVisible(true);
         activePanel = newActivePanel;
+    }
+
+
+    private void changeCanvasMouseAdapter(MouseAdapter newAdapter) {
+        if(canvasMouseAdapter == newAdapter) return;
+
+        if(canvasMouseAdapter != null) {
+            canvasPanel.removeMouseListener(canvasMouseAdapter);
+            canvasPanel.removeMouseMotionListener(canvasMouseAdapter);
+        }
+        canvasMouseAdapter = newAdapter;
+        canvasPanel.addMouseListener(newAdapter);
+        canvasPanel.addMouseMotionListener(newAdapter);
     }
 }
