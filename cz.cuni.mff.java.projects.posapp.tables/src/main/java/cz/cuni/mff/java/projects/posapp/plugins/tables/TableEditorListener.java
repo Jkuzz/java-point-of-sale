@@ -1,14 +1,9 @@
 package cz.cuni.mff.java.projects.posapp.plugins.tables;
 
 import javax.swing.*;
+import java.util.ArrayList;
 
-public class TableCanvasListener implements TableChangeListener {
-
-    private final JLayeredPane canvasPanel;
-
-    public TableCanvasListener(JLayeredPane canvasPanel) {
-        this.canvasPanel = canvasPanel;
-    }
+public record TableEditorListener(JLayeredPane canvasPanel) implements TableChangeListener {
 
     @Override
     public void notify(String eventType, Table table) {
@@ -16,6 +11,10 @@ public class TableCanvasListener implements TableChangeListener {
             case "tableAdded" -> handleTableAdded(table);
             case "tableRemoved" -> handleTableRemoved(table);
         }
+    }
+
+    @Override
+    public void notify(String eventType, ArrayList<Table> tables) {
     }
 
     private void handleTableAdded(Table table) {

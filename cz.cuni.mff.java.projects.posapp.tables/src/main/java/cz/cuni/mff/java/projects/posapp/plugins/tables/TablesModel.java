@@ -16,16 +16,23 @@ public class TablesModel extends TableEventPublisher{
     }
 
 
-    public ArrayList<Table> getTables() {
-        return null;
-    }
-
-
+    /**
+     * Create a new table and add it to the model.
+     * Model notifies observers of change in model.
+     * @param newTable Bounds of to add
+     * @param interact whether new table is interactive
+     */
     public void addTable(Rectangle newTable, boolean interact) {
         Table table = new Table(newTable, interact, interact ? interactColor : baseColor);
         addTable(table);
     }
 
+
+    /**
+     * Add an instantiated Table to the model. Use mainly when cloning an existing table.
+     * Model notifies observers of change in model.
+     * @param newTable table to add to model
+     */
     public void addTable(Table newTable) {
         tables.add(newTable);
         notify("tableAdded", newTable);
@@ -41,17 +48,29 @@ public class TablesModel extends TableEventPublisher{
 //    }
 
 
+    /**
+     * Remove a Table from the data model.
+     * Model notifies observers of change in model.
+     * @param table to be removed
+     */
     public void removeTable(Table table) {
         tables.remove(table);
         notify("tableRemoved", table);
     }
 
 
+    /**
+     * Notify observers of new tables save.
+     */
     public void saveTables() {
-        tables.forEach(table -> {
-            Rectangle bounds = table.getBounds();
-            System.out.println(bounds);
-            // TODO: Save tables to database
-        });
+        notify("tablesSaved", tables);
+    }
+
+
+    /**
+     * Load existing saved tables from the database.
+     */
+    public void loadTables() {
+        // TODO: load existing tables from database.
     }
 }

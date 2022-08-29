@@ -27,4 +27,11 @@ public class TableEventPublisher {
             listener.notify(eventType, affectedTable);
         }
     }
+
+    public void notify(String eventType, ArrayList<Table> affectedTables) {
+        List<TableChangeListener> users = listeners.get(eventType);
+        for (TableChangeListener listener : users) {
+            listener.notify(eventType, affectedTables);
+        }
+    }
 }

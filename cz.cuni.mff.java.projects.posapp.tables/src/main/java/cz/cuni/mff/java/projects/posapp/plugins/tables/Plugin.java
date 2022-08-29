@@ -37,8 +37,8 @@ public class Plugin implements POSPlugin {
         JPanel modulePanel = new JPanel(new GridBagLayout());
         makeContent(modulePanel);
 
-        TablesDatabaseConnector databaseConnector = new TablesDatabaseConnector();
-        tablesModel.subscribe("tableAdded", databaseConnector);
+        TablesDatabaseListener databaseListener = new TablesDatabaseListener();
+        tablesModel.subscribe("tablesSaved", databaseListener);
 
         return modulePanel;
     }
@@ -82,17 +82,21 @@ public class Plugin implements POSPlugin {
      */
     private JPanel makeTablesPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(new Color(175, 175, 175));
+        panel.setBackground(new Color(110, 110, 110));
 
-//        GridBagConstraints gbc = new GridBagConstraints();
-//        gbc.fill = GridBagConstraints.BOTH;
-//        gbc.insets = new Insets(5, 0, 5, 5);
-//        gbc.weightx = 1;
-//        gbc.weighty = 1;
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridx = 0;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
 
-        JPanel canvasPanel = new JPanel();
-        canvasPanel.setLayout(null);
-        panel.add(canvasPanel);
+        JLayeredPane viewCanvasPanel = new JLayeredPane();
+        viewCanvasPanel.setLayout(null);
+        panel.add(viewCanvasPanel, gbc);
+
+        TableViewListener listener = new TableViewListener(viewCanvasPanel);
+        tablesModel.subscribe("tablesSaved", listener);
 
         return panel;
     }
@@ -123,7 +127,7 @@ public class Plugin implements POSPlugin {
         editCanvasPanel.setBackground(new Color(175, 175, 175));
         editCanvasPanel.setForeground(new Color(175, 175, 175));
 
-        TableChangeListener tableListener = new TableCanvasListener(editCanvasPanel);
+        TableChangeListener tableListener = new TableEditorListener(editCanvasPanel);
         tablesModel.subscribe("tableAdded", tableListener);
         tablesModel.subscribe("tableRemoved", tableListener);
 
