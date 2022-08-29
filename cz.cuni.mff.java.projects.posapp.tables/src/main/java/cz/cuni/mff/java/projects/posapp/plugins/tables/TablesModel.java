@@ -22,11 +22,13 @@ public class TablesModel extends TableEventPublisher{
 
 
     public void addTable(Rectangle newTable, boolean interact) {
-        System.out.println("New table added: ");
-        System.out.println(newTable);
         Table table = new Table(newTable, interact, interact ? interactColor : baseColor);
-        tables.add(table);
-        notify("tableAdded", table);
+        addTable(table);
+    }
+
+    public void addTable(Table newTable) {
+        tables.add(newTable);
+        notify("tableAdded", newTable);
     }
 
 
@@ -39,13 +41,17 @@ public class TablesModel extends TableEventPublisher{
 //    }
 
 
-
-    public void removeTable() {
-
+    public void removeTable(Table table) {
+        tables.remove(table);
+        notify("tableRemoved", table);
     }
 
 
     public void saveTables() {
-
+        tables.forEach(table -> {
+            Rectangle bounds = table.getBounds();
+            System.out.println(bounds);
+            // TODO: Save tables to database
+        });
     }
 }

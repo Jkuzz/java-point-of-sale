@@ -29,6 +29,11 @@ public class MoveInputAdapter extends MouseAdapter implements KeyListener {
     public void mouseClicked(MouseEvent mouseEvent) {
     }
 
+    /**
+     * Select clicked panel or finish dragging.
+     * If a panel is dragged outside the canvas, delete it.
+     * @param mouseEvent MouseEvent
+     */
     @Override
     public void mouseReleased(MouseEvent mouseEvent) {
         Table targetTable;
@@ -41,6 +46,9 @@ public class MoveInputAdapter extends MouseAdapter implements KeyListener {
         // Stop dragging
         if(draggedTable != null) {
             selectTable(draggedTable);
+            if(!draggedTable.getBounds().intersects(canvasPanel.getBounds())) {
+                deleteSelectedTable();
+            }
             draggedTable = null;
         } else if (targetTable != null) {
             selectTable(targetTable);
@@ -81,16 +89,15 @@ public class MoveInputAdapter extends MouseAdapter implements KeyListener {
 
     private void deleteSelectedTable() {
         if(lastClickedTable != null && lastClickedTable.isSelected()) {
-            canvasPanel.remove(lastClickedTable);
-            canvasPanel.repaint();
+            tablesModel.removeTable(lastClickedTable);
+            lastClickedTable = null;
         }
     }
 
     private void duplicateSelectedTable() {
         if(lastClickedTable != null && lastClickedTable.isSelected()) {
             Table duplicate = (Table) lastClickedTable.clone();
-            canvasPanel.add(duplicate);
-            canvasPanel.repaint();
+            tablesModel.addTable(duplicate);
         }
     }
 

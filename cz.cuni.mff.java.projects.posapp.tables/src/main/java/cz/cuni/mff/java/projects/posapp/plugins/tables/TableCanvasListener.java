@@ -24,6 +24,7 @@ public class TableCanvasListener implements TableChangeListener {
     }
 
     private void handleTableRemoved(Table table) {
-
+        canvasPanel.remove(table);
+        canvasPanel.repaint();
     }
 }

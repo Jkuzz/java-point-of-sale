@@ -19,7 +19,7 @@ public class Plugin implements POSPlugin {
     private MouseAdapter canvasMouseAdapter;
     private KeyListener canvasKeyListener;
 
-    private final TablesModel tablesModel = new TablesModel("tableAdded", "tablesSaved");
+    private final TablesModel tablesModel = new TablesModel("tableAdded", "tableRemoved", "tablesSaved");
 
     public Plugin() {
         editCanvasPanel.setLayout(null);
@@ -31,7 +31,7 @@ public class Plugin implements POSPlugin {
         return "Tables";
     }
 
-    
+
     @Override
     public JPanel makeMainPanel() {
         JPanel modulePanel = new JPanel(new GridBagLayout());
@@ -125,6 +125,7 @@ public class Plugin implements POSPlugin {
 
         TableChangeListener tableListener = new TableCanvasListener(editCanvasPanel);
         tablesModel.subscribe("tableAdded", tableListener);
+        tablesModel.subscribe("tableRemoved", tableListener);
 
         return panel;
     }
@@ -153,18 +154,19 @@ public class Plugin implements POSPlugin {
         JButton moveButton = new JButton("Move");
         JButton saveButton = new JButton("Save");
 
+        RectangleInputAdapter rectangleInputStrategy = new RectangleInputAdapter(editCanvasPanel, tablesModel);
+        MoveInputAdapter moveInputStrategy = new MoveInputAdapter(editCanvasPanel, tablesModel);
+
         rectButton.addActionListener(
             e -> {
-                RectangleInputAdapter adapter = new RectangleInputAdapter(editCanvasPanel, tablesModel);
-                changeCanvasMouseAdapter(adapter);
-                changeCanvasKeyListener(adapter);
+                changeCanvasMouseAdapter(rectangleInputStrategy);
+                changeCanvasKeyListener(rectangleInputStrategy);
             }
         );
         moveButton.addActionListener(
             e -> {
-                MoveInputAdapter adapter = new MoveInputAdapter(editCanvasPanel, tablesModel);
-                changeCanvasMouseAdapter(adapter);
-                changeCanvasKeyListener(adapter);
+                changeCanvasMouseAdapter(moveInputStrategy);
+                changeCanvasKeyListener(moveInputStrategy);
             }
         );
         saveButton.addActionListener(e -> tablesModel.saveTables());
