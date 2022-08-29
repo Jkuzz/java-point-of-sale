@@ -2,11 +2,13 @@ package cz.cuni.mff.java.projects.posapp.plugins.tables;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 
-public class RectangleMouseAdapter extends MouseAdapter {
+public class RectangleInputAdapter extends MouseAdapter implements KeyListener {
 
     private boolean drawing = false;
     private boolean drawingInteract = false;
@@ -14,11 +16,12 @@ public class RectangleMouseAdapter extends MouseAdapter {
 
     private final JPanel drawRectangle = new JPanel();
     private final TablesModel tablesModel;
+    private final JLayeredPane canvasPanel;
 
 
-    public RectangleMouseAdapter(JPanel canvasPanel, TablesModel tablesModel) {
+    public RectangleInputAdapter(JLayeredPane canvasPanel, TablesModel tablesModel) {
         this.tablesModel = tablesModel;
-        canvasPanel.add(drawRectangle);
+        this.canvasPanel = canvasPanel;
     }
 
     @Override
@@ -26,11 +29,10 @@ public class RectangleMouseAdapter extends MouseAdapter {
         if(mouseEvent.getButton() != MouseEvent.BUTTON1
             && mouseEvent.getButton() != MouseEvent.BUTTON3) return;
 
+        canvasPanel.remove(drawRectangle);
         drawing = false;
         tablesModel.addTable(drawRectangle.getBounds(), drawingInteract);
         drawingInteract = false;
-        drawRectangle.setVisible(false);
-        drawRectangle.setEnabled(false);
     }
 
     @Override
@@ -46,9 +48,9 @@ public class RectangleMouseAdapter extends MouseAdapter {
             } else {
                 drawRectangle.setBackground(tablesModel.baseColor);
             }
+            canvasPanel.add(drawRectangle);
+            canvasPanel.moveToFront(drawRectangle);
             drawRectangle.setBounds(drawStart.x, drawStart.y, 1, 1);
-            drawRectangle.setVisible(true);
-            drawRectangle.setEnabled(true);
         }
 
         Point currentPoint = mouseEvent.getPoint();
@@ -60,5 +62,20 @@ public class RectangleMouseAdapter extends MouseAdapter {
                 Math.abs(currentPoint.x - drawStart.x),
                 Math.abs(currentPoint.y - drawStart.y)
         );
+    }
+
+    @Override
+    public void keyTyped(KeyEvent keyEvent) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent keyEvent) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent keyEvent) {
+
     }
 }

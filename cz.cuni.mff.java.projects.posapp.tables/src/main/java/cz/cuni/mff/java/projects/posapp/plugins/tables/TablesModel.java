@@ -30,11 +30,13 @@ public class TablesModel extends TableEventPublisher{
     }
 
 
-    public void addTable(Point centre, double radius, boolean interact) {
-        System.out.println("New table added: ");
-        System.out.println(centre + ": " + radius);
-        // TODO: Notify observers
-    }
+//    public void addTable(Point centre, double radius, boolean interact) {
+//        System.out.println("New table added: ");
+//        System.out.println(centre + ": " + radius);
+//        Table table = new Table(centre, radius, interact, interact ? interactColor : baseColor);
+//        tables.add(table);
+//        notify("tableAdded", table);
+//    }
 
 
 

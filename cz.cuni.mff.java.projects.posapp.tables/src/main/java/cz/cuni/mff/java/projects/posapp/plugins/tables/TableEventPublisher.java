@@ -3,7 +3,7 @@ package cz.cuni.mff.java.projects.posapp.plugins.tables;
 import java.util.*;
 
 public class TableEventPublisher {
-    Map<String, List<NewTableListener>> listeners = new HashMap<>();
+    Map<String, List<TableChangeListener>> listeners = new HashMap<>();
 
     public TableEventPublisher(String... operations) {
         for (String operation : operations) {
@@ -11,19 +11,19 @@ public class TableEventPublisher {
         }
     }
 
-    public void subscribe(String eventType, NewTableListener listener) {
-        List<NewTableListener> users = listeners.get(eventType);
+    public void subscribe(String eventType, TableChangeListener listener) {
+        List<TableChangeListener> users = listeners.get(eventType);
         users.add(listener);
     }
 
-    public void unsubscribe(String eventType, NewTableListener listener) {
-        List<NewTableListener> users = listeners.get(eventType);
+    public void unsubscribe(String eventType, TableChangeListener listener) {
+        List<TableChangeListener> users = listeners.get(eventType);
         users.remove(listener);
     }
 
     public void notify(String eventType, Table affectedTable) {
-        List<NewTableListener> users = listeners.get(eventType);
-        for (NewTableListener listener : users) {
+        List<TableChangeListener> users = listeners.get(eventType);
+        for (TableChangeListener listener : users) {
             listener.notify(eventType, affectedTable);
         }
     }

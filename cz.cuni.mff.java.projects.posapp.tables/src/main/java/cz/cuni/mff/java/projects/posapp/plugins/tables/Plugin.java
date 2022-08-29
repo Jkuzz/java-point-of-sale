@@ -6,22 +6,23 @@ import cz.cuni.mff.java.projects.posapp.plugins.POSPlugin;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.util.HashMap;
 
 public class Plugin implements POSPlugin {
 
-
     private JPanel activePanel;
     private JPanel tablesPanel;
     private JPanel editPanel;
-    private JPanel canvasPanel = new JPanel();
+    private final JLayeredPane editCanvasPanel = new JLayeredPane();
     private MouseAdapter canvasMouseAdapter;
+    private KeyListener canvasKeyListener;
 
-    private TablesModel tablesModel = new TablesModel("tableAdded");
+    private final TablesModel tablesModel = new TablesModel("tableAdded", "tablesSaved");
 
     public Plugin() {
-        canvasPanel.setLayout(null);
+        editCanvasPanel.setLayout(null);
     }
 
 
@@ -30,9 +31,10 @@ public class Plugin implements POSPlugin {
         return "Tables";
     }
 
+    
     @Override
     public JPanel makeMainPanel() {
-        JPanel modulePanel = new JPanel(new GridBagLayout());;
+        JPanel modulePanel = new JPanel(new GridBagLayout());
         makeContent(modulePanel);
 
         TablesDatabaseConnector databaseConnector = new TablesDatabaseConnector();
@@ -82,14 +84,19 @@ public class Plugin implements POSPlugin {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(new Color(175, 175, 175));
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(5, 0, 5, 5);
-        gbc.weightx = 1;
-        gbc.weighty = 1;
+//        GridBagConstraints gbc = new GridBagConstraints();
+//        gbc.fill = GridBagConstraints.BOTH;
+//        gbc.insets = new Insets(5, 0, 5, 5);
+//        gbc.weightx = 1;
+//        gbc.weighty = 1;
+
+        JPanel canvasPanel = new JPanel();
+        canvasPanel.setLayout(null);
+        panel.add(canvasPanel);
 
         return panel;
     }
+
 
     /**
      * Create panel for the editing of table setup.
@@ -98,7 +105,8 @@ public class Plugin implements POSPlugin {
      */
     private JPanel makeEditPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(new Color(175, 175, 175));
+        Color backgroundColour = new Color(110, 110, 110);
+        panel.setBackground(backgroundColour);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
@@ -108,40 +116,71 @@ public class Plugin implements POSPlugin {
         gbc.weighty = 1;
         gbc.weightx = 0;
 
-        MouseAdapter mouseAdapter = new RectangleMouseAdapter(canvasPanel, tablesModel);
-        changeCanvasMouseAdapter(mouseAdapter);
+        panel.add(makePaintSidebarPanel(backgroundColour), gbc);
 
-        panel.add(makePaintSidebarPanel(), gbc);
         gbc.weightx = 1;
-        panel.add(canvasPanel, gbc);
+        panel.add(editCanvasPanel, gbc);
+        editCanvasPanel.setBackground(new Color(175, 175, 175));
+        editCanvasPanel.setForeground(new Color(175, 175, 175));
+
+        TableChangeListener tableListener = new TableCanvasListener(editCanvasPanel);
+        tablesModel.subscribe("tableAdded", tableListener);
 
         return panel;
     }
 
 
-    private JPanel makePaintSidebarPanel() {
+    /**
+     * Create the paint tool selection panel of the table editor.
+     * Includes buttons for changing of mouse actions using the Strategy pattern.
+     * @param backgroundColour of the panel
+     * @return the panel
+     */
+    private JPanel makePaintSidebarPanel(Color backgroundColour) {
         JPanel sidebarPanel = new JPanel(new GridBagLayout());
+        sidebarPanel.setBackground(backgroundColour);
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(5, 2, 5, 2);
         gbc.ipady = 10;
+        gbc.anchor = GridBagConstraints.PAGE_START;
         gbc.gridx = 0;
         gbc.gridy = GridBagConstraints.RELATIVE;
 
         JButton rectButton = new JButton("Rect");
-        JButton circleButton = new JButton("Circ");
+//        JButton circleButton = new JButton("Circ");
         JButton moveButton = new JButton("Move");
+        JButton saveButton = new JButton("Save");
 
         rectButton.addActionListener(
-                e -> changeCanvasMouseAdapter(new RectangleMouseAdapter(canvasPanel, tablesModel))
+            e -> {
+                RectangleInputAdapter adapter = new RectangleInputAdapter(editCanvasPanel, tablesModel);
+                changeCanvasMouseAdapter(adapter);
+                changeCanvasKeyListener(adapter);
+            }
         );
-        circleButton.addActionListener(
-                e -> changeCanvasMouseAdapter(new CircleMouseAdapter(canvasPanel, tablesModel))
+        moveButton.addActionListener(
+            e -> {
+                MoveInputAdapter adapter = new MoveInputAdapter(editCanvasPanel, tablesModel);
+                changeCanvasMouseAdapter(adapter);
+                changeCanvasKeyListener(adapter);
+            }
         );
+        saveButton.addActionListener(e -> tablesModel.saveTables());
 
         sidebarPanel.add(rectButton, gbc);
-        sidebarPanel.add(circleButton, gbc);
+//        sidebarPanel.add(circleButton, gbc);
         sidebarPanel.add(moveButton, gbc);
+
+        rectButton.doClick();  // Initialise editor with the rectangle tool
+
+        gbc.weighty = 1;
+        JPanel fillerPanel = new JPanel();
+        fillerPanel.setBackground(backgroundColour);
+        sidebarPanel.add(fillerPanel, gbc);  // Filler panel to move save to bottom
+        gbc.weighty = 0;
+        sidebarPanel.add(saveButton, gbc);
         return sidebarPanel;
     }
 
@@ -161,15 +200,34 @@ public class Plugin implements POSPlugin {
     }
 
 
+    /**
+     * Change the current keyboard listener Strategy for the edit window.
+     * @param newListener listener to change to
+     */
+    private void changeCanvasKeyListener(KeyListener newListener) {
+        editCanvasPanel.requestFocusInWindow();
+        if(canvasKeyListener == newListener) return;
+
+        if(canvasKeyListener != null) {
+            editCanvasPanel.removeKeyListener(canvasKeyListener);
+        }
+        canvasKeyListener = newListener;
+        editCanvasPanel.addKeyListener(newListener);
+    }
+
+    /**
+     * Change the current mouse listener Strategy for the edit window.
+     * @param newAdapter listener to change to
+     */
     private void changeCanvasMouseAdapter(MouseAdapter newAdapter) {
         if(canvasMouseAdapter == newAdapter) return;
 
         if(canvasMouseAdapter != null) {
-            canvasPanel.removeMouseListener(canvasMouseAdapter);
-            canvasPanel.removeMouseMotionListener(canvasMouseAdapter);
+            editCanvasPanel.removeMouseListener(canvasMouseAdapter);
+            editCanvasPanel.removeMouseMotionListener(canvasMouseAdapter);
         }
         canvasMouseAdapter = newAdapter;
-        canvasPanel.addMouseListener(newAdapter);
-        canvasPanel.addMouseMotionListener(newAdapter);
+        editCanvasPanel.addMouseListener(newAdapter);
+        editCanvasPanel.addMouseMotionListener(newAdapter);
     }
 }
