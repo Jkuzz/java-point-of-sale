@@ -12,35 +12,32 @@ import java.util.ArrayList;
  */
 public class SidebarPanel extends JPanel {
 
-    public SidebarPanel(MainViewPanel mainViewPanel, ArrayList<POSPlugin> buttonPlugins) {
+    /**
+     * Create the sidebar for the application. Holds plugin-switching buttons.
+     * @param buttonPlugins list of discovered plugins to make buttons for
+     */
+    public SidebarPanel(ArrayList<POSPlugin> buttonPlugins) {
         this.setLayout(new GridBagLayout());
         this.setBackground(new Color(50, 50, 50));
-        this.add(makeModuleButtons(mainViewPanel, buttonPlugins));
+        this.add(makeModuleButtons(buttonPlugins));
     }
 
 
     /**
      * Create buttons for the discovered button-requiring plugins.
-     * @param mainViewPanel Main application panel. The plugins will create their panels here.
+     * Plugins use the plugins class name to request panel change in the root App class.
      * @param buttonPlugins list of all plugins to display in sidebar
      * @return JPanel containing the buttons
      */
-    private JPanel makeModuleButtons(MainViewPanel mainViewPanel, ArrayList<POSPlugin> buttonPlugins) {
+    private JPanel makeModuleButtons(ArrayList<POSPlugin> buttonPlugins) {
         JPanel moduleButtonsPanel = new JPanel(new GridLayout(0, 1, 0, 5));
         moduleButtonsPanel.setOpaque(false);
         moduleButtonsPanel.setMinimumSize(new Dimension(500,500));
 
         for(POSPlugin plugin : buttonPlugins) {
             JButton moduleButton = makeModuleButton(plugin.getDisplayName());
-            moduleButton.addActionListener(actionEvent -> {
-                mainViewPanel.removeAll();
-                GridBagConstraints gbc = new GridBagConstraints();
-                gbc.fill = GridBagConstraints.BOTH;
-                gbc.weightx = 1;
-                gbc.weighty = 1;
-                mainViewPanel.add(plugin.makeMainPanel(), gbc);
-                mainViewPanel.revalidate();
-            });
+
+            moduleButton.addActionListener(actionEvent -> App.switchActivePlugin(plugin.getClass().getName()));
             moduleButtonsPanel.add(moduleButton);
         }
         return moduleButtonsPanel;
