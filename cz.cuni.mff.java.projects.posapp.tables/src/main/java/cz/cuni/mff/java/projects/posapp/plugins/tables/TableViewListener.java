@@ -11,15 +11,20 @@ public record TableViewListener(JLayeredPane viewCanvasPanel) implements TableCh
 
     @Override
     public void notify(String eventType, ArrayList<Table> tables) {
-        if ("tablesSaved".equals(eventType)) {
-            handleTablesSaved(tables);
+        switch (eventType) {
+            case "tablesSaved", "tablesLoaded" -> handleTablesSaved(tables);
         }
     }
 
+    /**
+     * Display the newly saved tables state in the panel.
+     * Removes all previous container children first.
+     * Also works with loading tables.
+     * @param tables to add to view
+     */
     private void handleTablesSaved(ArrayList<Table> tables) {
         viewCanvasPanel.removeAll();
         tables.forEach(table -> {
-            System.out.println(table);
             Table clonedTable = (Table) table.clone();
             viewCanvasPanel.add(clonedTable);
             viewCanvasPanel.moveToFront(clonedTable);

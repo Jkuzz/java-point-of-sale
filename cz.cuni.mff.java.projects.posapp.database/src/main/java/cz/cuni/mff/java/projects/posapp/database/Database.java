@@ -1,6 +1,7 @@
 package cz.cuni.mff.java.projects.posapp.database;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,7 +67,7 @@ public class Database implements AutoCloseable {
      * Execute the provided query string on the database connection.
      * TODO: Stop SQL injection?
      * @param query to execute
-     * @return Result set or null if error occurred.
+     * @return Result set or null if error or on UPDATE/INSERT.
      */
     public ResultSet query(String query) {
         try {
@@ -75,6 +76,29 @@ public class Database implements AutoCloseable {
                 return stmt.getResultSet();
             }
             return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    /**
+     * Execute the provided query string on the database connection.
+     * Treats query as a transaction and commits at the end.
+     * @param transactions to execute
+     * @return Result set or null if error or on UPDATE/INSERT.
+     */
+    public ArrayList<ResultSet> doTransaction(Iterable<String> transactions) {
+        try {
+            connection.setAutoCommit(false);
+            ArrayList<ResultSet> results = new ArrayList<>();
+            transactions.forEach(t -> {
+                results.add(query(t));
+            });
+            connection.commit();
+            connection.setAutoCommit(true);
+            return results;
         } catch (SQLException e) {
             e.printStackTrace();
             return null;

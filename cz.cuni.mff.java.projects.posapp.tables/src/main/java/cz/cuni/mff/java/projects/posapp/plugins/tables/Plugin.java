@@ -19,7 +19,8 @@ public class Plugin implements POSPlugin {
     private MouseAdapter canvasMouseAdapter;
     private KeyListener canvasKeyListener;
 
-    private final TablesModel tablesModel = new TablesModel("tableAdded", "tableRemoved", "tablesSaved");
+    private final TablesModel tablesModel = new TablesModel(
+            "tableAdded", "tableRemoved", "tablesSaved", "tablesLoaded");
 
     public Plugin() {
         editCanvasPanel.setLayout(null);
@@ -36,10 +37,7 @@ public class Plugin implements POSPlugin {
     public JPanel makeMainPanel() {
         JPanel modulePanel = new JPanel(new GridBagLayout());
         makeContent(modulePanel);
-
-        TablesDatabaseListener databaseListener = new TablesDatabaseListener();
-        tablesModel.subscribe("tablesSaved", databaseListener);
-
+        tablesModel.loadTables();
         return modulePanel;
     }
 
@@ -82,7 +80,7 @@ public class Plugin implements POSPlugin {
      */
     private JPanel makeTablesPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(new Color(110, 110, 110));
+        panel.setBackground(new Color(175, 175, 175));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
@@ -97,7 +95,7 @@ public class Plugin implements POSPlugin {
 
         TableViewListener listener = new TableViewListener(viewCanvasPanel);
         tablesModel.subscribe("tablesSaved", listener);
-
+        tablesModel.subscribe("tablesLoaded", listener);
         return panel;
     }
 
@@ -126,10 +124,14 @@ public class Plugin implements POSPlugin {
         panel.add(editCanvasPanel, gbc);
         editCanvasPanel.setBackground(new Color(175, 175, 175));
         editCanvasPanel.setForeground(new Color(175, 175, 175));
+        editCanvasPanel.setOpaque(true);
 
         TableChangeListener tableListener = new TableEditorListener(editCanvasPanel);
         tablesModel.subscribe("tableAdded", tableListener);
         tablesModel.subscribe("tableRemoved", tableListener);
+        tablesModel.subscribe("tablesLoaded", tableListener);
+        TablesDatabaseListener databaseListener = new TablesDatabaseListener(editCanvasPanel);
+        tablesModel.subscribe("tablesSaved", databaseListener);
 
         return panel;
     }

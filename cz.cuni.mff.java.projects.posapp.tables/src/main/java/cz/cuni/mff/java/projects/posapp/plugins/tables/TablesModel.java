@@ -1,14 +1,40 @@
 package cz.cuni.mff.java.projects.posapp.plugins.tables;
 
-import java.awt.*;
-import java.util.ArrayList;
+import cz.cuni.mff.java.projects.posapp.core.Pair;
+import cz.cuni.mff.java.projects.posapp.database.DBClient;
+import cz.cuni.mff.java.projects.posapp.database.Database;
+import cz.cuni.mff.java.projects.posapp.database.DevUser;
 
+import java.awt.*;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+
+
+/**
+ * Holds the table data and dispatches events upon data change to subscribed observers.
+ */
 public class TablesModel extends TableEventPublisher{
 
     public final Color baseColor = new Color(30, 30, 30);
     public final Color interactColor = new Color(255, 122, 122);
 
     private final ArrayList<Table> tables = new ArrayList<>();
+    private int nextId = 0;
+
+
+    /**
+     * Auto-increments table ID for new tables for DB primary keys.
+     * Doesn't use mySQL AUTO_INCREMENT because it only needs to be session-unique
+     * @return nex available table id
+     */
+    private int getNextId() {
+        return nextId++;
+    }
 
 
     public TablesModel(String... operations) {
@@ -23,7 +49,7 @@ public class TablesModel extends TableEventPublisher{
      * @param interact whether new table is interactive
      */
     public void addTable(Rectangle newTable, boolean interact) {
-        Table table = new Table(newTable, interact, interact ? interactColor : baseColor);
+        Table table = new Table(newTable, interact, interact ? interactColor : baseColor, getNextId());
         addTable(table);
     }
 
@@ -67,10 +93,57 @@ public class TablesModel extends TableEventPublisher{
     }
 
 
+    public Table cloneTable(Table cloneMe) {
+        Rectangle newBounds = cloneMe.getBounds();
+        newBounds.translate(20, 20);
+        return new Table(newBounds, cloneMe.isInteractable(), cloneMe.getBackground(), getNextId());
+    }
+
+
     /**
      * Load existing saved tables from the database.
      */
     public void loadTables() {
-        // TODO: load existing tables from database.
+        DBClient dbClient = new TablesDBClient();
+        Database database = Database.getInstance(new DevUser(), dbClient);
+        ResultSet resultSet = database.query("SELECT * FROM tables");
+
+        ArrayList<Pair<Integer, Table>> dbTables = new ArrayList<>();
+
+        try {
+            ResultSetMetaData rsmd = resultSet.getMetaData();
+            int columnsCount = rsmd.getColumnCount();
+            List<String> cols = new ArrayList<>();
+            for (int i = 1; i <= columnsCount; i += 1) {
+                cols.add(rsmd.getColumnName(i));
+            }
+
+            while(resultSet.next()) {
+                Object[] row = new Object[columnsCount];
+                for(int i = 1; i <= columnsCount; i++) {
+                    row[i - 1] = resultSet.getObject(i);
+                }
+
+                int x = (int) row[cols.indexOf("x")];
+                int y = (int) row[cols.indexOf("y")];
+                int z = (int) row[cols.indexOf("z")];
+                int width = (int) row[cols.indexOf("width")];
+                int height = (int) row[cols.indexOf("height")];
+                int id = (int) row[cols.indexOf("id")];
+                boolean interact = (boolean) row[cols.indexOf("interact")];
+
+                nextId = Math.max(nextId, id) + 1;  // Move nextId to highest saved id
+
+                Rectangle newTableBounds = new Rectangle(x, y, width, height);
+                Table newTable = new Table(newTableBounds, interact, interact ? interactColor : baseColor, id);
+                dbTables.add(new Pair<>(z, newTable));  // Add to z position to maintain vertical ordering
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        dbTables.sort((a, b) -> b.getA() - a.getA());
+        tables.addAll(dbTables.stream().map(Pair::getB).toList());
+        notify("tablesLoaded", tables);
     }
 }

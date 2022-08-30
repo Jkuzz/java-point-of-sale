@@ -3,9 +3,10 @@ package cz.cuni.mff.java.projects.posapp.plugins.tables;
 import javax.swing.*;
 import java.awt.*;
 
-public class Table extends JPanel implements Prototype{
+public class Table extends JPanel implements Prototype {
 
-    private boolean interactable;
+    private final boolean interactable;
+    public final int id;
 
     public boolean isSelected() {
         return selected;
@@ -23,8 +24,9 @@ public class Table extends JPanel implements Prototype{
         return interactable;
     }
 
-    public Table(Rectangle rectangle, boolean interact, Color bgColor) {
+    public Table(Rectangle rectangle, boolean interact, Color bgColor, int id) {
         super();
+        this.id = id;
         setBackground(bgColor);
         setBounds(rectangle);
         interactable = interact;
@@ -39,6 +41,9 @@ public class Table extends JPanel implements Prototype{
 //    }
 
 
+    /**
+     * Toggle the selection of the table. Handles highlighting.
+     */
     public void toggleSelected() {
         if(selected) {
             setBorder(null);
@@ -59,11 +64,16 @@ public class Table extends JPanel implements Prototype{
         );
     }
 
-
+    /**
+     * Clone the table panel using the Protoype pattern. Use this to make a copy of
+     * the table object for multiple windows. DO NOT USE FOR EDITOR, will cause an issue with
+     * non-unique ids. For that, use TablesModel.cloneTable to maintain unique key uniqueness.
+     * @return the clone
+     */
     @Override
     public Prototype clone() {
         Rectangle newBounds = getBounds();
         newBounds.translate(20, 20);
-        return new Table(newBounds, interactable, getBackground());
+        return new Table(newBounds, interactable, getBackground(), id);
     }
 }

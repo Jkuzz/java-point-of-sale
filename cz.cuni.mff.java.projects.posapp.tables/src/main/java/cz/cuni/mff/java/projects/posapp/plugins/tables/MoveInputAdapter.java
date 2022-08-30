@@ -96,7 +96,7 @@ public class MoveInputAdapter extends MouseAdapter implements KeyListener {
 
     private void duplicateSelectedTable() {
         if(lastClickedTable != null && lastClickedTable.isSelected()) {
-            Table duplicate = (Table) lastClickedTable.clone();
+            Table duplicate =tablesModel.cloneTable(lastClickedTable);
             tablesModel.addTable(duplicate);
         }
     }
