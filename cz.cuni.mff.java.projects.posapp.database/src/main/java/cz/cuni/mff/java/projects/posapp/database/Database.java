@@ -71,7 +71,10 @@ public class Database implements AutoCloseable {
     public ResultSet query(String query) {
         try {
             Statement stmt = connection.createStatement();
-            return stmt.executeQuery(query);
+            if(stmt.execute(query)) { // True if was SELECT
+                return stmt.getResultSet();
+            }
+            return null;
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
