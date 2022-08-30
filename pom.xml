@@ -16,6 +16,7 @@
         <module>cz.cuni.mff.java.projects.posapp.booking</module>
         <module>cz.cuni.mff.java.projects.posapp.database</module>
         <module>cz.cuni.mff.java.projects.posapp.products</module>
+        <module>cz.cuni.mff.java.projects.posapp.payment</module>
     </modules>
 
     <properties>
