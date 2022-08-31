@@ -6,35 +6,27 @@ import cz.cuni.mff.java.projects.posapp.plugins.DefaultComponentFactory;
 import cz.cuni.mff.java.projects.posapp.plugins.POSPlugin;
 
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 
 public class Plugin implements POSPlugin {
 
-    Database db;
     private JPanel productsPanel;
     private JPanel newProductPanel;
     private JPanel activePanel;
 
     private final DBClient dbClient = new ProductsClient();
-
+    private final ProductsTableModel productsModel = ProductsTableModel.getInstance();
 
     /**
      * Requests the database connection singleton object.
      */
-    public Plugin() {
-        db = Database.getInstance(new DevUser(), dbClient);
-    }
+    public Plugin() {}
 
     @Override
     public String getDisplayName() {
@@ -114,7 +106,7 @@ public class Plugin implements POSPlugin {
         gbc.weightx = 1;
         gbc.weighty = 1;
 
-        JTable productsTable = new JTable(new ProductsTableModel(db));
+        JTable productsTable = new JTable(productsModel);
         JScrollPane tableScrollPane = new JScrollPane(productsTable);
 
         panel.add(tableScrollPane, gbc);
@@ -180,41 +172,30 @@ public class Plugin implements POSPlugin {
 
 
     /**
-     * Prepare an SQL statement to insert a new product into the database.
-     * @return the prepared statement
-     * @throws SQLException if prepareStatement() failed
-     */
-    private PreparedStatement prepareInsertStatement() throws SQLException {
-        return db.prepareStatement(
-                "INSERT INTO `products` (`price`, `name`, `id`) VALUES (?, ?, NULL);"
-        );
-    }
-
-
-    /**
-     * Process input text fields into prepared query and send to database.
+     * Request database insertion from Model. Display error in case of failure.
      * @param userInputs field name: input textField
      */
     private void insertNewProduct(HashMap<String, JTextField> userInputs) {
-        try(PreparedStatement preparedStatement = prepareInsertStatement()){
-            int priceInput = Integer.parseInt(userInputs.get("price").getText());
-            preparedStatement.setInt(1, priceInput);
-            preparedStatement.setString(2, userInputs.get("name").getText());
-            preparedStatement.execute();
+        try {
+            productsModel.insertNewProduct(userInputs);
         } catch(SQLException e) {
-            displayDBError(e.getMessage());
+            displayMessage(e.getMessage(), new Color(255, 50, 50));
+            return;
         } catch (NumberFormatException e) {
-            displayDBError("Invalid integer field input!");
+            displayMessage("Invalid integer field input!", new Color(255, 50, 50));
+            return;
         }
+        displayMessage("Product added successfully", new Color(17, 255, 0));
     }
 
 
     /**
-     * Create an error label and add it to the panel.
+     * Create a message label and add it to the panel.
      * Set up a worker thread to dispose the label after some time.
      * @param message to be displayed
+     * @param textColour colour of text to display
      */
-    private void displayDBError(String message) {
+    private void displayMessage(String message, Color textColour) {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(15, 60, 15, 60);
@@ -227,7 +208,7 @@ public class Plugin implements POSPlugin {
         JLabel errorLabel = new JLabel(message);
         activePanel.add(errorLabel, gbc);
         errorLabel.setFont(new Font("SansSerif", Font.PLAIN, 18));
-        errorLabel.setForeground(new Color(255, 50, 50));
+        errorLabel.setForeground(textColour);
 
         // The worker will disable the label later
         SwingWorker<Object, Object> hideErrorWorker = new SwingWorker<>(){
