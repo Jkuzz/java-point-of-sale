@@ -1,5 +1,7 @@
 package cz.cuni.mff.java.projects.posapp.plugins;
 
+import cz.cuni.mff.java.projects.posapp.core.App;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -63,6 +65,11 @@ public class DefaultComponentFactory {
 
         buttonDefinitions.forEach((name, actionListener) -> {
             JButton button = new JButton(name);
+            button.setFocusPainted(false);
+//            button.setBorderPainted(false);
+            button.setBackground(App.getColor("button"));
+            button.setForeground(App.getColor("button-text"));
+            button.setFont(new Font("Sans", Font.BOLD, 16));
             if(actionListener != null) {
                 button.addActionListener(actionListener);
             }
