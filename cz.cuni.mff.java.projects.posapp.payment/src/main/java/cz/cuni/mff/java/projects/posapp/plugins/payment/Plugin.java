@@ -11,6 +11,13 @@ import java.util.HashMap;
 
 
 public class Plugin implements POSPlugin {
+
+    private final JPanel tabsPanel = new JPanel(new GridBagLayout());
+
+    public Plugin() {
+        tabsPanel.setBackground(App.getColor("tertiary"));
+    }
+
     @Override
     public String getDisplayName() {
         return "Payment";
@@ -28,31 +35,46 @@ public class Plugin implements POSPlugin {
      * @param modulePanel panel to insert content into
      */
     private void makeContent(JPanel modulePanel) {
-        GridBagConstraints gbc = new GridBagConstraints();
         modulePanel.setBackground(App.getColor("tertiary"));
+        GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.ipadx = 10;
-        gbc.ipady = 10;
         gbc.gridx = 0;
         gbc.gridy = GridBagConstraints.RELATIVE;
         gbc.weightx = 1;
         gbc.weighty = 0;
 
         HashMap<String, ActionListener> headerButtonDefs = new HashMap<>();
-        headerButtonDefs.put("New", null);
+        headerButtonDefs.put("New", e -> addNewTab("New"));
         JPanel headerPanel = DefaultComponentFactory.makeHeader(
                 getDisplayName(), new Color(177, 74, 211), headerButtonDefs
         );
         modulePanel.add(headerPanel, gbc);
 
         gbc.weighty = 1;
-        JPanel paymentPanel = makePaymentPanel();
-        modulePanel.add(paymentPanel, gbc);
+        gbc.insets = new Insets(20, 20, 20, 20);
+        JScrollPane tabsScrollPane = new JScrollPane(tabsPanel);
+        tabsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        modulePanel.add(tabsScrollPane, gbc);
     }
 
-    private JPanel makePaymentPanel() {
-        JPanel paymentPanel = new JPanel(new GridBagLayout());
 
-        return paymentPanel;
+    public void addNewTab(String tabName) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(5, 0, 5, 0);
+        gbc.ipady = 10;
+        gbc.gridx = 0;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.weightx = 1;
+        gbc.weighty = 0;
+
+        tabsPanel.add(new TabPanel(tabName), gbc);
+        tabsPanel.revalidate();
+    }
+
+
+    public void deleteTab(TabPanel tab) {
+        tabsPanel.remove(tab);
+        tabsPanel.revalidate();
     }
 }

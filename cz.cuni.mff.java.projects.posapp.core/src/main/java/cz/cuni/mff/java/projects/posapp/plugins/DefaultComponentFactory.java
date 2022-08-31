@@ -19,7 +19,7 @@ public class DefaultComponentFactory {
      * @return the created header panel
      */
     public static JPanel makeHeader(String title, Color color , HashMap<String, ActionListener> buttonDefinitions) {
-        JPanel header = new JPanel(new GridBagLayout());;
+        JPanel header = new JPanel(new GridBagLayout());
         header.setBackground(color);
 
         GridBagConstraints gbc = new GridBagConstraints();
