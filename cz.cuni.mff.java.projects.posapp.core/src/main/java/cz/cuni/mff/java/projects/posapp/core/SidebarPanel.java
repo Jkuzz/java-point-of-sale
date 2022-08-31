@@ -18,7 +18,7 @@ public class SidebarPanel extends JPanel {
      */
     public SidebarPanel(ArrayList<POSPlugin> buttonPlugins) {
         this.setLayout(new GridBagLayout());
-        this.setBackground(new Color(50, 50, 50));
+        this.setBackground(App.getColor("primary"));
         this.add(makeModuleButtons(buttonPlugins));
     }
 
@@ -54,8 +54,8 @@ public class SidebarPanel extends JPanel {
         btn.setFocusPainted(false);
         btn.setBorderPainted(false);
 
-        btn.setBackground(new Color(90, 90, 90));
-        btn.setForeground(new Color(240, 240, 240));
+        btn.setBackground(App.getColor("button"));
+        btn.setForeground(App.getColor("button-text"));
         btn.setFont(new Font("Sans", Font.PLAIN, 18));
         btn.setPreferredSize(new Dimension(300, 50));
         return btn;

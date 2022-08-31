@@ -9,6 +9,12 @@ import java.util.HashMap;
  */
 public class App {
 
+    public static void setColorScheme(HashMap<String, Color> colorScheme) {
+        App.colorScheme = ColorSchemeFactory.validateScheme(colorScheme);
+    }
+
+    private static HashMap<String, Color> colorScheme = ColorSchemeFactory.makeDarkScheme();
+
     private static final HashMap<String, JPanel> appPlugins = new HashMap<>();
     private static JPanel mainViewPanel;
 
@@ -38,7 +44,7 @@ public class App {
     private static JPanel createContent(PluginLoader pluginLoader) {
         JPanel contentPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        contentPanel.setBackground(new Color(60, 60, 60));
+        contentPanel.setBackground(getColor("background"));
 
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(15, 20, 15, 10);
@@ -52,7 +58,7 @@ public class App {
         contentPanel.add(areaPanel, gbc);
 
         mainViewPanel = new JPanel(new GridBagLayout());
-        mainViewPanel.setBackground(new Color(50, 50, 50));
+        mainViewPanel.setBackground(getColor("primary"));
         gbc.gridx = GridBagConstraints.RELATIVE;
         gbc.insets = new Insets(15, 10, 15, 20);
         gbc.weightx = 1;
@@ -68,10 +74,9 @@ public class App {
      * @param pluginLoader that loaded the plugins
      */
     private static void makePluginPanels(PluginLoader pluginLoader) {
-        pluginLoader.getPlugins().forEach(posPlugin -> {
-            appPlugins.put(posPlugin.getClass().getName(), posPlugin.makeMainPanel());
-            System.out.println(posPlugin.getClass().getName());
-        });
+        pluginLoader.getPlugins().forEach(posPlugin ->
+            appPlugins.put(posPlugin.getClass().getName(), posPlugin.makeMainPanel())
+        );
     }
 
 
@@ -88,6 +93,15 @@ public class App {
         mainViewPanel.add(appPlugins.get(pluginClass), gbc);
         mainViewPanel.revalidate();
         mainViewPanel.repaint();
+    }
+
+    /**
+     * Get a color from the defined color scheme.
+     * @param key of color
+     * @return the color or null if not set
+     */
+    public static Color getColor(String key) {
+        return colorScheme.get(key);
     }
 
     /**

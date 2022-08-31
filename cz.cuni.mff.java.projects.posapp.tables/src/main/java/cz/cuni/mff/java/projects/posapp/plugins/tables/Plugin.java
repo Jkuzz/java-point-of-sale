@@ -1,5 +1,6 @@
 package cz.cuni.mff.java.projects.posapp.plugins.tables;
 
+import cz.cuni.mff.java.projects.posapp.core.App;
 import cz.cuni.mff.java.projects.posapp.plugins.DefaultComponentFactory;
 import cz.cuni.mff.java.projects.posapp.plugins.POSPlugin;
 
@@ -80,7 +81,7 @@ public class Plugin implements POSPlugin {
      */
     private JPanel makeTablesPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(new Color(175, 175, 175));
+        panel.setBackground(App.getColor("tertiary"));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
@@ -107,7 +108,7 @@ public class Plugin implements POSPlugin {
      */
     private JPanel makeEditPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
-        Color backgroundColour = new Color(110, 110, 110);
+        Color backgroundColour = App.getColor("tertiary");
         panel.setBackground(backgroundColour);
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -122,8 +123,8 @@ public class Plugin implements POSPlugin {
 
         gbc.weightx = 1;
         panel.add(editCanvasPanel, gbc);
-        editCanvasPanel.setBackground(new Color(175, 175, 175));
-        editCanvasPanel.setForeground(new Color(175, 175, 175));
+        editCanvasPanel.setBackground(App.getColor("tertiary"));
+        editCanvasPanel.setForeground(App.getColor("tertiary"));
         editCanvasPanel.setOpaque(true);
 
         TableChangeListener tableListener = new TableEditorListener(editCanvasPanel);

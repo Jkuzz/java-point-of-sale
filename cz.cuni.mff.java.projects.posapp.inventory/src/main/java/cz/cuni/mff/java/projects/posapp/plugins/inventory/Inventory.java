@@ -1,5 +1,6 @@
 package cz.cuni.mff.java.projects.posapp.plugins.inventory;
 
+import cz.cuni.mff.java.projects.posapp.core.App;
 import cz.cuni.mff.java.projects.posapp.database.DBClient;
 import cz.cuni.mff.java.projects.posapp.database.Database;
 import cz.cuni.mff.java.projects.posapp.database.DevUser;
@@ -82,7 +83,7 @@ public class Inventory implements POSPlugin{
      */
     private JPanel makeInventoryPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(new Color(175, 175, 175));
+        panel.setBackground(App.getColor("tertiary"));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;

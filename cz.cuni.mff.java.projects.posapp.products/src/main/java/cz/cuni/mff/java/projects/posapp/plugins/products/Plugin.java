@@ -1,5 +1,6 @@
 package cz.cuni.mff.java.projects.posapp.plugins.products;
 
+import cz.cuni.mff.java.projects.posapp.core.App;
 import cz.cuni.mff.java.projects.posapp.database.*;
 import cz.cuni.mff.java.projects.posapp.plugins.DefaultComponentFactory;
 import cz.cuni.mff.java.projects.posapp.plugins.POSPlugin;
@@ -105,7 +106,7 @@ public class Plugin implements POSPlugin {
      */
     private JPanel makeProductsPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(new Color(175, 175, 175));
+        panel.setBackground(App.getColor("tertiary"));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
@@ -182,7 +183,7 @@ public class Plugin implements POSPlugin {
      */
     private JPanel makeNewProductPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(new Color(175, 175, 175));
+        panel.setBackground(App.getColor("tertiary"));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;

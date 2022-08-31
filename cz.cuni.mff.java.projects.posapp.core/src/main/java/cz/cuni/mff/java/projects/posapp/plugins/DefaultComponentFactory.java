@@ -35,10 +35,12 @@ public class DefaultComponentFactory {
         headerLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
         header.add(headerLabel, gbc);
 
-        JPanel headerButtonsPanel = makeHeaderButtonsPanel(buttonDefinitions);
-        gbc.fill = GridBagConstraints.VERTICAL;
-        gbc.anchor = GridBagConstraints.LINE_END;
-        header.add(headerButtonsPanel, gbc);
+        if(buttonDefinitions != null) {
+            JPanel headerButtonsPanel = makeHeaderButtonsPanel(buttonDefinitions);
+            gbc.fill = GridBagConstraints.VERTICAL;
+            gbc.anchor = GridBagConstraints.LINE_END;
+            header.add(headerButtonsPanel, gbc);
+        }
         return header;
     }
 
