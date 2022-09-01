@@ -6,10 +6,7 @@ import cz.cuni.mff.java.projects.posapp.database.DevUser;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -78,7 +75,7 @@ public class ProductsTableModel extends AbstractTableModel {
      */
     PreparedStatement prepareInsertStatement() throws SQLException {
         return db.prepareStatement(
-            "INSERT INTO `products` (`price`, `name`, `id`) VALUES (?, ?, NULL);"
+            "INSERT INTO `products` (`price`, `name`, `id`, `group_id`) VALUES (?, ?, NULL, ?);"
         );
     }
 
@@ -88,7 +85,7 @@ public class ProductsTableModel extends AbstractTableModel {
      * Add the new product to the table model.
      * @param userInputs field name: input textField
      */
-    public void insertNewProduct(HashMap<String, JTextField> userInputs) throws SQLException {
+    public void insertNewProduct(HashMap<String, ProductInputComponent> userInputs) throws SQLException {
         ResultSet rs = db.query("""
                 SELECT AUTO_INCREMENT
                 FROM information_schema.tables
@@ -97,14 +94,47 @@ public class ProductsTableModel extends AbstractTableModel {
         rs.next();
         int nextId = rs.getInt(1);
 
+        assert userInputs.get("price").getTextInput() != null;
+        assert userInputs.get("name").getTextInput() != null;
+        assert userInputs.get("group_id").getComboInput() != null;
+
         PreparedStatement preparedStatement = prepareInsertStatement();
-        int priceInput = Integer.parseInt(userInputs.get("price").getText());
+        int priceInput = Integer.parseInt(userInputs.get("price").getTextInput().getText());
         preparedStatement.setInt(1, priceInput);
-        preparedStatement.setString(2, userInputs.get("name").getText());
+
+        String nameInput = userInputs.get("name").getTextInput().getText();
+        preparedStatement.setString(2, nameInput);
+
+        JComboBox<GroupComboBoxItem> groupIdInput = userInputs.get("group_id").getComboInput();
+        Integer groupId = groupIdInput.getItemAt(groupIdInput.getSelectedIndex()).getId();
+        if(groupId == null) {
+            preparedStatement.setNull(3, Types.INTEGER);
+        } else {
+            preparedStatement.setInt(3, groupId);
+        }
         preparedStatement.execute();
 
-        data.add(new Object[]{priceInput, userInputs.get("name").getText(), nextId});
+        HashMap<String, Object> newData = new HashMap<>();
+        newData.put("price", priceInput);
+        newData.put("name", nameInput);
+        newData.put("group_id", groupId);
+        newData.put("id", nextId);
+        addToData(newData);
         fireTableDataChanged();
+    }
+
+
+    /**
+     * Add new data row to the table model. Adds to the correct columns.
+     * @param fields to add. Must contain the same columns as model.
+     */
+    private void addToData(HashMap<String, Object> fields) {
+        Object[] newRow = new Object[getColumnCount()];
+        fields.forEach((key, val) -> {
+            int keyIndex = columnNames.indexOf(key);
+            newRow[keyIndex] = val;
+        });
+        data.add(newRow);
     }
 
     @Override

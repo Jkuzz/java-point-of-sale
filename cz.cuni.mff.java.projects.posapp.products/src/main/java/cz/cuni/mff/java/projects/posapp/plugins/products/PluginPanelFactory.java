@@ -63,7 +63,7 @@ public class PluginPanelFactory {
      *                           Takes an array of the inputs as an argument.
      * @return the panel
      */
-    JPanel makeDBAddPanel(DBTableDef tableDef, Function<HashMap<String, JTextField>, ActionListener> makeActionListener) {
+    JPanel makeDBAddPanel(DBTableDef tableDef, Function<HashMap<String, ProductInputComponent>, ActionListener> makeActionListener) {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(App.getColor("tertiary"));
         GridBagConstraints gbc = new GridBagConstraints();
@@ -75,7 +75,7 @@ public class PluginPanelFactory {
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.weighty = 0;
 
-        final HashMap<String, JTextField> userInputs = new HashMap<>();
+        final HashMap<String, ProductInputComponent> userInputs = new HashMap<>();
         final HashMap<String, Pair<String, String>>  foreignKeyDefs = tableDef.getForeignKeys();
 
         foreignKeyDefs.forEach((key, foreign) -> {
@@ -85,11 +85,12 @@ public class PluginPanelFactory {
             foreignKeys.forEach(foreignKeyInput::addItem);
 
             addInputField(panel, key, foreignKeyInput, gbc);
+            userInputs.put(key, new ProductInputComponent(foreignKeyInput));
         });
 
         tableDef.getTableSchema().forEach((name, type) -> {
-            // Do not create input for primary key -> will be auto-incremented or added programmatically otherwise
-            // Do not create input for foreign key -> was created by F-K join above
+            // Don't create input for primary key -> will be auto-incremented or added programmatically otherwise
+            // Don't create input for foreign key -> was created by F-K join above
             if(name.equals(tableDef.getPrimaryKey()) || foreignKeyDefs.containsKey(name)) {
                 return;
             }
@@ -106,7 +107,7 @@ public class PluginPanelFactory {
                 });
             }
             addInputField(panel, name, inputText, gbc);
-            userInputs.put(name, inputText);
+            userInputs.put(name, new ProductInputComponent(inputText));
         });
 
         JButton confirmButton = new JButton("Confirm");

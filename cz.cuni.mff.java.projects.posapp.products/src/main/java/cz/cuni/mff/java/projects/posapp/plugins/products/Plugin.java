@@ -99,7 +99,7 @@ public class Plugin implements POSPlugin {
      * Request database insertion from Model. Display error in case of failure.
      * @param userInputs field name: input textField
      */
-    void insertNewProduct(HashMap<String, JTextField> userInputs) {
+    void insertNewProduct(HashMap<String, ProductInputComponent> userInputs) {
         try {
             productsModel.insertNewProduct(userInputs);
         } catch(SQLException e) {
@@ -117,7 +117,7 @@ public class Plugin implements POSPlugin {
      * Request database insertion from Model. Display error in case of failure.
      * @param userInputs field name: input textField
      */
-    void insertNewProductGroup(HashMap<String, JTextField> userInputs) {
+    void insertNewProductGroup(HashMap<String, ProductInputComponent> userInputs) {
 //        try {
 //            productsModel.insertNewProduct(userInputs);
 //        } catch(SQLException e) {
