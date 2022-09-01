@@ -58,6 +58,11 @@ public class Plugin implements POSPlugin {
     }
 
 
+    public JPanel makeTabAdd() {
+        return null;
+    }
+
+
     public void addNewTab(String tabName) {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
@@ -68,12 +73,12 @@ public class Plugin implements POSPlugin {
         gbc.weightx = 1;
         gbc.weighty = 0;
 
-        tabsPanel.add(new TabPanel(tabName), gbc);
+        tabsPanel.add(new NameTabPanel(tabName), gbc);
         tabsPanel.revalidate();
     }
 
 
-    public void deleteTab(TabPanel tab) {
+    public void deleteTab(NameTabPanel tab) {
         tabsPanel.remove(tab);
         tabsPanel.revalidate();
     }

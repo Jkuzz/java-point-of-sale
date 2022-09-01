@@ -7,14 +7,15 @@ import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class TabPanel extends JPanel {
+
+public class NameTabPanel extends JPanel implements Tab {
     private final LocalDateTime timeCreated;
     private String name;
     private double tabPrice;
     private final JButton nameButton = new JButton();
     private final JTextField nameInputField = new JTextField();
 
-    public TabPanel(String name) {
+    public NameTabPanel(String name) {
         super(new GridBagLayout());
         this.name = name;
         timeCreated = LocalDateTime.now();
@@ -73,6 +74,7 @@ public class TabPanel extends JPanel {
         nameInputField.setEnabled(true);
         nameInputField.setVisible(true);
         nameInputField.setText(name);
+        nameInputField.requestFocusInWindow();
 
         nameButton.setEnabled(false);
         nameButton.setVisible(false);

@@ -1,9 +1,10 @@
 module cz.cuni.mff.java.projects.posapp.payment {
 
-    requires cz.cuni.mff.java.projects.posapp.core;
     requires java.desktop;
-    requires cz.cuni.mff.java.projects.posapp.database;
     requires java.sql;
+    requires cz.cuni.mff.java.projects.posapp.core;
+    requires cz.cuni.mff.java.projects.posapp.database;
+    requires cz.cuni.mff.java.projects.posapp.products;
 
     exports cz.cuni.mff.java.projects.posapp.plugins.payment;
 

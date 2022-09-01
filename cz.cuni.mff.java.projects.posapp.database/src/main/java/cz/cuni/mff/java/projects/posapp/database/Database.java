@@ -12,15 +12,30 @@ public class Database implements AutoCloseable {
 
     private static Database instance;  // Singleton
 
+
+    /**
+     * Request the Database connection instance. Validates that the table definitions requested
+     * by the plugin client are present in the database.
+     *
+     * TODO: Singleton -> Factory and enable multiple database connections?
+     * @param user defining database connection details
+     * @param client providing table definitions to validate
+     * @return the Singleton instance
+     */
     public static Database getInstance(DBUser user, DBClient client) {
         if(instance == null) {
             instance = new Database(user);
         }
         client.getTableDefs().entrySet().forEach(instance::verifyTable);
+        client.getTableDefs().entrySet().forEach(instance::addForeignKeys);
         return instance;
     }
 
 
+    /**
+     * Ensure the driver is present and create a database connection.
+     * @param user defines DB access details
+     */
     Database(DBUser user) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -47,19 +62,53 @@ public class Database implements AutoCloseable {
     public void verifyTable(Map.Entry<String, DBTableDef> tableDefEntry) {
         HashMap<String, String> tableColumns = tableDefEntry.getValue().getTableSchema();
 
+        // Define table columns
         StringBuilder tableQuery = new StringBuilder("CREATE TABLE IF NOT EXISTS " + tableDefEntry.getKey() + " ( ");
         tableColumns.forEach((column, colType) ->
                 tableQuery.append(column).append(" ").append(colType).append(", ")
         );
+
+        // Primary key
         tableQuery.append(" PRIMARY KEY( ")
                 .append(tableDefEntry.getValue().getPrimaryKey())
                 .append(" ))");
+
         try {
             Statement statement = connection.createStatement();
             statement.executeUpdate(tableQuery.toString());
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+
+    /**
+     * Add foreign keys to the database. Foreign keys added after table definitions
+     * to avoid problems with ordering or cyclical references.
+     * @param tableDefEntry table whose foreign keys to add
+     */
+    private void addForeignKeys(Map.Entry<String, DBTableDef> tableDefEntry) {
+
+        if(tableDefEntry.getValue().getForeignKeys().size() == 0) {
+            return;
+        }
+
+        ArrayList<String> keyQueries = new ArrayList<>();
+
+        tableDefEntry.getValue().getForeignKeys().forEach((key, val) -> {
+            String tableQuery = "ALTER TABLE " +
+                    tableDefEntry.getKey() +
+                    " ADD FOREIGN KEY (" +
+                    key +
+                    ") REFERENCES " +
+                    val.getA() +
+                    "(" +
+                    val.getB() +
+                    ") ON DELETE CASCADE";
+            keyQueries.add(tableQuery);
+            System.out.println(tableQuery);
+        });
+        query(String.join(", ", keyQueries));
     }
 
 
@@ -105,9 +154,11 @@ public class Database implements AutoCloseable {
         }
     }
 
+
     public PreparedStatement prepareStatement(String statement) throws SQLException {
         return connection.prepareStatement(statement);
     }
+
 
     public void commit() throws SQLException {
         connection.commit();
