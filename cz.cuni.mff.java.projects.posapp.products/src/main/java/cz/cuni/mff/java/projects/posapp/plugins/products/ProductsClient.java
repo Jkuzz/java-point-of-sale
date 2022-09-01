@@ -13,7 +13,7 @@ public class ProductsClient implements DBClient {
     public HashMap<String, DBTableDef> getTableDefs() {
         HashMap<String, DBTableDef> tableDefs = new HashMap<>();
         tableDefs.put("products", new ProductsClient.ProductTableDef());
-        tableDefs.put("product_groups", new ProductsClient.ProductTableDef());
+        tableDefs.put("product_groups", new ProductsClient.ProductGroupTableDef());
         return tableDefs;
     }
 

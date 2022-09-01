@@ -1,15 +1,11 @@
 package cz.cuni.mff.java.projects.posapp.plugins.products;
 
-import cz.cuni.mff.java.projects.posapp.core.App;
-import cz.cuni.mff.java.projects.posapp.database.*;
 import cz.cuni.mff.java.projects.posapp.plugins.DefaultComponentFactory;
 import cz.cuni.mff.java.projects.posapp.plugins.POSPlugin;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.HashMap;
 
@@ -18,10 +14,12 @@ public class Plugin implements POSPlugin {
 
     private JPanel productsPanel;
     private JPanel newProductPanel;
+    private JPanel newGroupPanel;
     private JPanel activePanel;
 
-    private final DBClient dbClient = new ProductsClient();
-    private final ProductsTableModel productsModel = ProductsTableModel.getInstance();
+
+    private final PluginPanelFactory panelFactory = new PluginPanelFactory(this);
+    final ProductsTableModel productsModel = ProductsTableModel.getInstance();
 
     /**
      * Requests the database connection singleton object.
@@ -55,13 +53,15 @@ public class Plugin implements POSPlugin {
         gbc.weightx = 1;
         gbc.weighty = 0;
 
-        productsPanel = makeProductsPanel();
+        productsPanel = panelFactory.makeProductsPanel();
         activePanel = productsPanel;
-        newProductPanel = makeNewProductPanel();
+        newProductPanel = panelFactory.makeNewProductPanel();
+        newGroupPanel = panelFactory.makeNewGroupPanel();
 
         HashMap<String, ActionListener> headerButtonDefs = new HashMap<>();
         headerButtonDefs.put("Products", e -> setActivePanel(productsPanel));
-        headerButtonDefs.put("Add new", e -> setActivePanel(newProductPanel));
+        headerButtonDefs.put("New product", e -> setActivePanel(newProductPanel));
+        headerButtonDefs.put("New group", e -> setActivePanel(newGroupPanel));
 
         JPanel headerPanel = DefaultComponentFactory.makeHeader(
                 getDisplayName(), new Color(132, 213, 213), headerButtonDefs
@@ -71,6 +71,9 @@ public class Plugin implements POSPlugin {
         gbc.weighty = 1;
         modulePanel.add(productsPanel, gbc);
         modulePanel.add(newProductPanel, gbc);
+        modulePanel.add(newGroupPanel, gbc);
+        newGroupPanel.setEnabled(false);
+        newGroupPanel.setVisible(false);
         newProductPanel.setEnabled(false);
         newProductPanel.setVisible(false);
     }
@@ -93,89 +96,10 @@ public class Plugin implements POSPlugin {
 
 
     /**
-     * Create panel for the display of products.
-     * @return the products panel
-     */
-    private JPanel makeProductsPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(App.getColor("tertiary"));
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(20, 20, 20, 20);
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-
-        JTable productsTable = new JTable(productsModel);
-        JScrollPane tableScrollPane = new JScrollPane(productsTable);
-
-        panel.add(tableScrollPane, gbc);
-        return panel;
-    }
-
-
-    /**
-     * Create a panel for inserting a new product.
-     * Provides text-fields based on the db client table definitions.
-     * @return the panel
-     */
-    private JPanel makeNewProductPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(App.getColor("tertiary"));
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(15, 60, 15, 60);
-        gbc.ipadx = 10;
-        gbc.ipady = 10;
-        gbc.gridy = GridBagConstraints.RELATIVE;
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.weighty = 0;
-
-        final HashMap<String, DBTableDef> tableDefs = dbClient.getTableDefs();
-        final HashMap<String, JTextField> userInputs = new HashMap<>();
-        final DBTableDef productsDef = tableDefs.get("products");
-
-
-        productsDef.getTableSchema().forEach((name, type) -> {
-            if(name.equals(productsDef.getPrimaryKey())) {
-                return;
-            }
-            gbc.gridx = 0;
-            gbc.weightx = 0.1;
-            panel.add(new JLabel(name), gbc);
-            gbc.gridx = 1;
-            gbc.weightx = 1;
-            JTextField inputText = new JTextField();
-            if(type.contains("INTEGER")) {
-                inputText.addKeyListener(new KeyAdapter() {
-                    @Override
-                    public void keyTyped(KeyEvent e) {
-                        super.keyTyped(e);
-                        if(!Character.isDigit(e.getKeyChar())) {
-                            e.consume();
-                        }
-                    }
-                });
-            }
-            userInputs.put(name, inputText);
-            panel.add(inputText, gbc);
-        });
-
-        JButton confirmButton = new JButton("Confirm");
-        panel.add(confirmButton, gbc);
-
-        confirmButton.addActionListener(e -> insertNewProduct(userInputs));
-
-        return panel;
-    }
-
-
-    /**
      * Request database insertion from Model. Display error in case of failure.
      * @param userInputs field name: input textField
      */
-    private void insertNewProduct(HashMap<String, JTextField> userInputs) {
+    void insertNewProduct(HashMap<String, JTextField> userInputs) {
         try {
             productsModel.insertNewProduct(userInputs);
         } catch(SQLException e) {
@@ -186,6 +110,25 @@ public class Plugin implements POSPlugin {
             return;
         }
         displayMessage("Product added successfully", new Color(17, 255, 0));
+    }
+
+
+    /**
+     * Request database insertion from Model. Display error in case of failure.
+     * @param userInputs field name: input textField
+     */
+    void insertNewProductGroup(HashMap<String, JTextField> userInputs) {
+//        try {
+//            productsModel.insertNewProduct(userInputs);
+//        } catch(SQLException e) {
+//            displayMessage(e.getMessage(), new Color(255, 50, 50));
+//            return;
+//        } catch (NumberFormatException e) {
+//            displayMessage("Invalid integer field input!", new Color(255, 50, 50));
+//            return;
+//        }
+        userInputs.forEach((col, input) -> System.out.println(col + ": " + input));
+        displayMessage("Product Group added successfully", new Color(17, 255, 0));
     }
 
 

@@ -106,7 +106,6 @@ public class Database implements AutoCloseable {
                     val.getB() +
                     ") ON DELETE CASCADE";
             keyQueries.add(tableQuery);
-            System.out.println(tableQuery);
         });
         query(String.join(", ", keyQueries));
     }
