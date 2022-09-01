@@ -94,10 +94,6 @@ public class ProductsTableModel extends AbstractTableModel {
         rs.next();
         int nextId = rs.getInt(1);
 
-        assert userInputs.get("price").getTextInput() != null;
-        assert userInputs.get("name").getTextInput() != null;
-        assert userInputs.get("group_id").getComboInput() != null;
-
         PreparedStatement preparedStatement = prepareInsertStatement();
         int priceInput = Integer.parseInt(userInputs.get("price").getTextInput().getText());
         preparedStatement.setInt(1, priceInput);
@@ -136,6 +132,23 @@ public class ProductsTableModel extends AbstractTableModel {
         });
         data.add(newRow);
     }
+
+
+    public void insertNewGroup(HashMap<String, ProductInputComponent> userInputs) throws SQLException {
+        JComboBox<GroupComboBoxItem> groupInput = userInputs.get("parent_id").getComboInput();
+        GroupComboBoxItem selectedGroup = groupInput.getItemAt(groupInput.getSelectedIndex());
+
+        String query = "INSERT INTO `product_groups` (`parent_id`, `name`, `id`) VALUES (?, ?, NULL);";
+        PreparedStatement stmt = db.prepareStatement(query);
+        if(selectedGroup.getId() == null) {
+            stmt.setNull(1, Types.INTEGER);
+        } else {
+            stmt.setInt(1, selectedGroup.getId());
+        }
+        stmt.setString(2, userInputs.get("name").getTextInput().getText());
+        stmt.execute();
+    }
+
 
     @Override
     public int getRowCount() {

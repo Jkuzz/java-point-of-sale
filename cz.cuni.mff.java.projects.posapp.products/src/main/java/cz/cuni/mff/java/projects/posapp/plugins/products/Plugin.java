@@ -118,16 +118,15 @@ public class Plugin implements POSPlugin {
      * @param userInputs field name: input textField
      */
     void insertNewProductGroup(HashMap<String, ProductInputComponent> userInputs) {
-//        try {
-//            productsModel.insertNewProduct(userInputs);
-//        } catch(SQLException e) {
-//            displayMessage(e.getMessage(), new Color(255, 50, 50));
-//            return;
-//        } catch (NumberFormatException e) {
-//            displayMessage("Invalid integer field input!", new Color(255, 50, 50));
-//            return;
-//        }
-        userInputs.forEach((col, input) -> System.out.println(col + ": " + input));
+        try {
+            productsModel.insertNewGroup(userInputs);
+        } catch (SQLException e) {
+            displayMessage(e.getMessage(), new Color(255, 50, 50));
+            return;
+        } catch (NumberFormatException e) {
+            displayMessage("Invalid integer field input!", new Color(255, 50, 50));
+            return;
+        }
         displayMessage("Product Group added successfully", new Color(17, 255, 0));
     }
 
