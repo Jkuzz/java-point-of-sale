@@ -20,6 +20,7 @@ public class Plugin implements POSPlugin {
 
     private final PluginPanelFactory panelFactory = new PluginPanelFactory(this);
     final ProductsTableModel productsModel = ProductsTableModel.getInstance();
+    final ProductGroupsModel groupsModel = ProductGroupsModel.getInstance();
 
     /**
      * Requests the database connection singleton object.
@@ -119,7 +120,7 @@ public class Plugin implements POSPlugin {
      */
     void insertNewProductGroup(HashMap<String, ProductInputComponent> userInputs) {
         try {
-            productsModel.insertNewGroup(userInputs);
+            groupsModel.insertNewGroup(userInputs);
         } catch (SQLException e) {
             displayMessage(e.getMessage(), new Color(255, 50, 50));
             return;

@@ -3,15 +3,35 @@ package cz.cuni.mff.java.projects.posapp.plugins.products;
 import cz.cuni.mff.java.projects.posapp.database.Database;
 import cz.cuni.mff.java.projects.posapp.database.DevUser;
 
+import javax.swing.*;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
- * Model holding the product groups hierarchy.
+ * Model holding the product groups hierarchy. Implemented as Singleton.
  */
 public class ProductGroupsModel {
+
+    /**
+     * get the Singleton product model instance.
+     * @return the Singleton instance
+     */
+    public static ProductGroupsModel getInstance() {
+        if(instance == null) {
+            instance = new ProductGroupsModel();
+        }
+        return instance;
+    }
+
+    /**
+     * Singleton Model instance
+     */
+    private static ProductGroupsModel instance;
 
     private final Database db = Database.getInstance(new DevUser(), new ProductsClient());
     private final ArrayList<GroupComboBoxItem> groups = new ArrayList<>();
@@ -89,5 +109,33 @@ public class ProductGroupsModel {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public void insertNewGroup(HashMap<String, ProductInputComponent> userInputs) throws SQLException {
+        ResultSet rs = db.query("""
+                SELECT AUTO_INCREMENT
+                FROM information_schema.tables
+                WHERE table_name = 'product_groups'""");
+
+        rs.next();
+        int nextId = rs.getInt(1);
+
+        JComboBox<GroupComboBoxItem> groupInput = userInputs.get("parent_id").getComboInput();
+        GroupComboBoxItem selectedGroup = groupInput.getItemAt(groupInput.getSelectedIndex());
+
+        String query = "INSERT INTO `product_groups` (`parent_id`, `name`, `id`) VALUES (?, ?, NULL);";
+        String name = userInputs.get("name").getTextInput().getText();
+        PreparedStatement stmt = db.prepareStatement(query);
+        if(selectedGroup.getId() == null) {
+            stmt.setNull(1, Types.INTEGER);
+        } else {
+            stmt.setInt(1, selectedGroup.getId());
+        }
+
+        groups.add(new GroupComboBoxItem(name, selectedGroup.getId(), nextId));
+
+        stmt.setString(2, name);
+        stmt.execute();
     }
 }

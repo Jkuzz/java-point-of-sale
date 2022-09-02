@@ -6,20 +6,41 @@ import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 
 public class NameTabPanel extends JPanel implements Tab {
+    public LocalDateTime getTimeCreated() {
+        return timeCreated;
+    }
+
+    public String getTabName() {
+        return name;
+    }
+
+    public ArrayList<TabItem> getTabItems() {
+        return tabItems;
+    }
+
+    public void addTabItem(TabItem item) {
+        tabItems.add(item);
+    }
+
+    public void removeTabItem(TabItem item) {
+        tabItems.remove(item);
+    }
+
     private final LocalDateTime timeCreated;
     private String name;
-    private double tabPrice;
+    private final ArrayList<TabItem> tabItems = new ArrayList<>();
+
     private final JButton nameButton = new JButton();
     private final JTextField nameInputField = new JTextField();
 
-    public NameTabPanel(String name) {
+    public NameTabPanel(String name, PaymentMediator paymentMediator) {
         super(new GridBagLayout());
         this.name = name;
         timeCreated = LocalDateTime.now();
-        tabPrice = 0;
 
         setBackground(App.getColor("button"));
         GridBagConstraints gbc = new GridBagConstraints();
@@ -62,7 +83,8 @@ public class NameTabPanel extends JPanel implements Tab {
         buttonsPanel.setBackground(App.getColor("button"));
         JButton addButton = new JButton("Add");
         JButton payButton = new JButton("Pay");
-//        payButton.addActionListener(e -> ((Plugin)getParent()).deleteTab(this));
+        payButton.addActionListener(e -> paymentMediator.notify("payStarted", this));
+        addButton.addActionListener(e -> paymentMediator.notify("addStarted", this));
         buttonsPanel.add(addButton);
         buttonsPanel.add(payButton);
         gbc.weightx = 0;
@@ -94,5 +116,4 @@ public class NameTabPanel extends JPanel implements Tab {
         revalidate();
         repaint();
     }
-
 }
