@@ -7,7 +7,6 @@ import cz.cuni.mff.java.projects.posapp.plugins.products.ProductsTableModel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -43,7 +42,6 @@ public class AddProductPanel extends JPanel {
 
         gbc.weighty = 1;
         add(makeAddPanel(), gbc);
-
     }
 
     private JPanel makeAddPanel() {
@@ -51,6 +49,4 @@ public class AddProductPanel extends JPanel {
 
         return addPanel;
     }
-
-
 }

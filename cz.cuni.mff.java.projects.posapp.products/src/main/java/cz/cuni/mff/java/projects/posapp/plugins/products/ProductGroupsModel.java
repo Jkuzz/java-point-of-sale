@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 
 /**
@@ -35,6 +36,7 @@ public class ProductGroupsModel {
 
     private final Database db = Database.getInstance(new DevUser(), new ProductsClient());
     private final ArrayList<GroupComboBoxItem> groups = new ArrayList<>();
+    private final ProductFactory productFactory = new ProductFactory();
 
 
     /**
@@ -42,6 +44,11 @@ public class ProductGroupsModel {
      */
     public ProductGroupsModel() {
         queryGroups();
+    }
+
+
+    public Stream<GroupComboBoxItem> getGroupChildren(Integer parentId) {
+        return groups.stream().filter(g -> parentId.equals(g.getParentId()));
     }
 
 
@@ -72,6 +79,15 @@ public class ProductGroupsModel {
 
 
     /**
+     * Get the groups as a hierarchical structure
+     * @return the root groups list
+     */
+    public ArrayList<ProductGroup> getGroupsHierarchy() {
+        return productFactory.getGroups();
+    }
+
+
+    /**
      * Recursively add the parent and its children to the ordering. DFS recursion
      * @param parent order this groups children
      * @param orderedGroups ordered groups will be added here
@@ -81,9 +97,7 @@ public class ProductGroupsModel {
         parent.setLevel(level);
         orderedGroups.add(parent);
         if(parent.getId() == null) return;
-        groups.stream()
-                .filter(g -> parent.getId().equals(g.getParentId()))
-                .forEach(g -> orderGroupChildren(g, orderedGroups, level + 1));
+        getGroupChildren(parent.getId()).forEach(g -> orderGroupChildren(g, orderedGroups, level + 1));
     }
 
 
