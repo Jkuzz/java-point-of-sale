@@ -39,7 +39,6 @@ public class ProductsTableModel extends AbstractTableModel {
 
     private final DBClient dbClient = new ProductsClient();
     private final Database db = Database.getInstance(new DevUser(), dbClient);
-    private final ProductFactory productFactory = new ProductFactory();
 
 
     /**
@@ -66,15 +65,6 @@ public class ProductsTableModel extends AbstractTableModel {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Get the products present in the model as an array of Product instances.
-     * This is preferable to working with the raw tabular data, as is needed by the JTable
-     * @return Products in the model
-     */
-    public ArrayList<Product> getProducts() {
-        return productFactory.makeProductsList(columnNames, data);
     }
 
 

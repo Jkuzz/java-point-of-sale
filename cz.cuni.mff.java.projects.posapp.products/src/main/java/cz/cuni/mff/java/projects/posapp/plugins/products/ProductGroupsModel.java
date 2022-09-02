@@ -36,7 +36,6 @@ public class ProductGroupsModel {
 
     private final Database db = Database.getInstance(new DevUser(), new ProductsClient());
     private final ArrayList<GroupComboBoxItem> groups = new ArrayList<>();
-    private final ProductFactory productFactory = new ProductFactory();
 
 
     /**
@@ -75,15 +74,6 @@ public class ProductGroupsModel {
                 .filter(g -> g.getParentId() == null)
                 .forEach(g -> orderGroupChildren(g, orderedGroups, 0));
         return orderedGroups;
-    }
-
-
-    /**
-     * Get the groups as a hierarchical structure
-     * @return the root groups list
-     */
-    public ArrayList<ProductGroup> getGroupsHierarchy() {
-        return productFactory.getGroups();
     }
 
 
