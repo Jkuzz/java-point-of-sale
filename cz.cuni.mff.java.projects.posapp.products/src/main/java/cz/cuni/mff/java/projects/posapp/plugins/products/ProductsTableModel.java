@@ -9,6 +9,7 @@ import javax.swing.table.AbstractTableModel;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 
 /**
@@ -77,6 +78,24 @@ public class ProductsTableModel extends AbstractTableModel {
         return db.prepareStatement(
             "INSERT INTO `products` (`price`, `name`, `id`, `group_id`) VALUES (?, ?, NULL, ?);"
         );
+    }
+
+
+    public ArrayList<HashMap<String, Object>> getGroupProducts(Integer groupId) {
+        ArrayList<HashMap<String, Object>> groupProducts = new ArrayList<>();
+
+        int groupIdIndex = columnNames.indexOf("group_id");
+
+        for(Object[] row: data) {
+            if(!Objects.equals(row[groupIdIndex], groupId)) continue;
+
+            HashMap<String, Object> fields = new HashMap<>();
+            for(int i = 0; i < row.length; i += 1) {
+                fields.put(columnNames.get(i), row[i]);
+            }
+            groupProducts.add(fields);
+        }
+        return groupProducts;
     }
 
 

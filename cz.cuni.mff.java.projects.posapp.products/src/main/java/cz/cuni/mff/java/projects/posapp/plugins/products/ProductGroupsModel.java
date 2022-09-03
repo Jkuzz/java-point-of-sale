@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 
@@ -47,7 +48,7 @@ public class ProductGroupsModel {
 
 
     public Stream<GroupComboBoxItem> getGroupChildren(Integer parentId) {
-        return groups.stream().filter(g -> parentId.equals(g.getParentId()));
+        return groups.stream().filter(g -> g.getId() != null && Objects.equals(g.getParentId(), parentId));
     }
 
 

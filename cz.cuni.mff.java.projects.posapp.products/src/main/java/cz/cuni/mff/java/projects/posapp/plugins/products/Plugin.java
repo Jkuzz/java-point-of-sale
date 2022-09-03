@@ -18,14 +18,16 @@ public class Plugin implements POSPlugin {
     private JPanel activePanel;
 
 
-    private final PluginPanelFactory panelFactory = new PluginPanelFactory(this);
     final ProductsTableModel productsModel = ProductsTableModel.getInstance();
     final ProductGroupsModel groupsModel = ProductGroupsModel.getInstance();
+    private final PluginPanelFactory panelFactory;
 
     /**
      * Requests the database connection singleton object.
      */
-    public Plugin() {}
+    public Plugin() {
+        panelFactory = new PluginPanelFactory(this);
+    }
 
     @Override
     public String getDisplayName() {

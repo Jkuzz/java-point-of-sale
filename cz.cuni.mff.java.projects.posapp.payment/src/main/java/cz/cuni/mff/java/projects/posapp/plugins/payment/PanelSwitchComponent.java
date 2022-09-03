@@ -25,7 +25,7 @@ public class PanelSwitchComponent implements PaymentComponent {
     }
 
     private void handleAddStarted(Tab tab) {
-        AddProductPanel addProductPanel = new AddProductPanel(tab);
+        AddProductPanel addProductPanel = new AddProductPanel(tab, plugin.getPaymentMediator());
         plugin.showPanel(addProductPanel);
     }
 
@@ -35,8 +35,8 @@ public class PanelSwitchComponent implements PaymentComponent {
 
     private void handlePayStarted(Tab tab) {
         System.out.println("Starting payment for " + tab.getTabName());
-//        PayProductPanel addProductPanel = new PayProductPanel(tab);
-//        plugin.showPanel(addProductPanel);
+        CheckoutPanel addProductPanel = new CheckoutPanel(tab);
+        plugin.showPanel(addProductPanel);
     }
 
     private void handlePayEnded(Tab tab) {

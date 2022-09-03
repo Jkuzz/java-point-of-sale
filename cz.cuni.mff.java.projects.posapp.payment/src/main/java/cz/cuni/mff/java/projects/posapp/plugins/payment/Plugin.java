@@ -17,7 +17,6 @@ public class Plugin implements POSPlugin {
     private final PaymentMediator paymentMediator = new PaymentMediator(
             "tabOpened", "tabClosed", "addStarted", "addEnded", "payStarted", "payEnded");
 
-
     public Plugin() {
         tabsPanel = new TabsViewPanel(this, paymentMediator);
         gbc.fill = GridBagConstraints.BOTH;
@@ -40,6 +39,10 @@ public class Plugin implements POSPlugin {
     public JPanel makeMainPanel() {
         rootPanel.add(tabsPanel, gbc);
         return rootPanel;
+    }
+
+    public PaymentMediator getPaymentMediator() {
+        return paymentMediator;
     }
 
     /**
