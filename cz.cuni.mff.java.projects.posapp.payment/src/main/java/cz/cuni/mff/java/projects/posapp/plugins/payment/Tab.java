@@ -4,9 +4,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public interface Tab {
-    public LocalDateTime getTimeCreated();
-    public String getTabName();
-    public ArrayList<TabItem> getTabItems();
-    public void addTabItem(TabItem item);
-    public void removeTabItem(TabItem item);
+    LocalDateTime getTimeCreated();
+    String getTabName();
+    ArrayList<TabItem> getTabItems();
+    Float getTotalCost();
+    void addTabItem(TabItem item);
+    void removeTabItem(TabItem item);
 }

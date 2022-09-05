@@ -69,9 +69,15 @@ public class Database implements AutoCloseable {
         );
 
         // Primary key
-        tableQuery.append(" PRIMARY KEY( ")
+        if(tableDefEntry.getValue().getPrimaryKey().contains("(")) {
+            tableQuery.append(" PRIMARY KEY ")
                 .append(tableDefEntry.getValue().getPrimaryKey())
-                .append(" ))");
+                .append(" )");
+        } else {
+            tableQuery.append(" PRIMARY KEY (")
+                    .append(tableDefEntry.getValue().getPrimaryKey())
+                    .append(") )");
+        }
 
         try {
             Statement statement = connection.createStatement();
@@ -92,9 +98,6 @@ public class Database implements AutoCloseable {
         if(tableDefEntry.getValue().getForeignKeys().size() == 0) {
             return;
         }
-
-        ArrayList<String> keyQueries = new ArrayList<>();
-
         tableDefEntry.getValue().getForeignKeys().forEach((key, val) -> {
             String tableQuery = "ALTER TABLE " +
                     tableDefEntry.getKey() +
@@ -105,9 +108,8 @@ public class Database implements AutoCloseable {
                     "(" +
                     val.getB() +
                     ") ON DELETE CASCADE";
-            keyQueries.add(tableQuery);
+            query(tableQuery);
         });
-        query(String.join(", ", keyQueries));
     }
 
 

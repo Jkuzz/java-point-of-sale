@@ -21,7 +21,13 @@ public class PaymentSuccessHandler implements PaymentComponent {
         }
     }
 
+    /**
+     * Try to save the transaction to the database. If successful, delete the tab.
+     * @param tab to save to database
+     */
     private void handlePaySuccess(Tab tab) {
-        viewPanel.deleteTab(tab);
+        if(DatabaseConnector.getInstance().savePayment(tab)) {
+            viewPanel.deleteTab(tab);
+        }
     }
 }

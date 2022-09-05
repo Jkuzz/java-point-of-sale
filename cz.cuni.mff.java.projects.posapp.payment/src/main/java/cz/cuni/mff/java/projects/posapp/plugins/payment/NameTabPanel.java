@@ -10,10 +10,16 @@ import java.util.ArrayList;
 
 
 public class NameTabPanel extends JPanel implements Tab {
+    /**
+     * @return The time when the tab was created.
+     */
     public LocalDateTime getTimeCreated() {
         return timeCreated;
     }
 
+    /**
+     * @return name of the tab
+     */
     public String getTabName() {
         return name;
     }
@@ -26,6 +32,21 @@ public class NameTabPanel extends JPanel implements Tab {
         return tabItems;
     }
 
+    /**
+     * Get the sum of the prices of items in the tab.
+     * @return the sum
+     */
+    @Override
+    public Float getTotalCost() {
+        return tabItems.stream()
+                .map(t -> t.getPrice() * t.getAmount())
+                .reduce(0f, Float::sum);
+    }
+
+    /**
+     * Add a TabItem to the tab. Does not handle external side effects such as updating tab price totals.
+     * @param item to add
+     */
     public void addTabItem(TabItem item) {
         tabItems.add(item);
     }
@@ -45,6 +66,11 @@ public class NameTabPanel extends JPanel implements Tab {
     private final PaymentMediator paymentMediator;
 
 
+    /**
+     * Create the nameTab view panel. Intended to be displayed as a row in a list of tabs.
+     * @param name of the tab
+     * @param paymentMediator Mediator object to announce tab actions and button presses to.
+     */
     public NameTabPanel(String name, PaymentMediator paymentMediator) {
         super(new GridBagLayout());
         this.name = name;
@@ -114,10 +140,7 @@ public class NameTabPanel extends JPanel implements Tab {
      * Update the price label of the nameTab panel to display the sum of the tab's tabItems.
      */
     void updatePrice() {
-        float currentPrice = tabItems.stream()
-                .map(t -> t.getPrice() * t.getAmount())
-                .reduce(0f, Float::sum);
-        priceLabel.setText(String.valueOf(currentPrice));
+        priceLabel.setText(String.valueOf(getTotalCost()));
     }
 
 
