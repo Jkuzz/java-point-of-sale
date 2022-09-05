@@ -66,7 +66,6 @@ public class AddProductPanel extends JPanel {
      * @param productFields fields of product to add
      */
     void addToTab(HashMap<String, Object> productFields) {
-        System.out.println("Adding " + productFields.get("name"));
         TabItem tabItem = new TabItem(
                 (Integer) productFields.get("price"),
                 (String) productFields.get("name"),

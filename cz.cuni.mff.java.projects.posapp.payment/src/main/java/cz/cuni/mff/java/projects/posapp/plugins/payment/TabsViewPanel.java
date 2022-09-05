@@ -12,6 +12,7 @@ import java.util.HashMap;
 public class TabsViewPanel extends JPanel {
 
     private final JPanel tabsScrollPanel = new JPanel(new GridBagLayout());
+    private final PaymentSuccessHandler paymentSuccessHandler = new PaymentSuccessHandler(this);
     private final PaymentMediator paymentMediator;
     private final Plugin parent;
 
@@ -21,6 +22,7 @@ public class TabsViewPanel extends JPanel {
         this.paymentMediator = paymentMediator;
         this.setLayout(new GridBagLayout());
         tabsScrollPanel.setBackground(App.getColor("tertiary"));
+        paymentMediator.subscribe("paySuccess", paymentSuccessHandler);
         makeContent();
     }
 
@@ -94,11 +96,19 @@ public class TabsViewPanel extends JPanel {
 
 
     /**
-     * Delete the tab from the panel;
+     * Delete the tab from the panel. Assumes unique timeCreated:name identification
      * @param tab to delete
      */
-    public void deleteTab(NameTabPanel tab) {
-        tabsScrollPanel.remove(tab);
-        tabsScrollPanel.revalidate();
+    public void deleteTab(Tab tab) {
+        for(Component c: tabsScrollPanel.getComponents()) {
+            try {
+                NameTabPanel nameTabPanel = (NameTabPanel) c;
+                if(nameTabPanel.getTimeCreated() == tab.getTimeCreated()) {
+                    tabsScrollPanel.remove(nameTabPanel);
+                    tabsScrollPanel.revalidate();
+                    return;
+                }
+            } catch (ClassCastException ignored) {} // continue;
+        }
     }
 }

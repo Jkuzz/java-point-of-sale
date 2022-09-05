@@ -18,9 +18,9 @@ public class PanelSwitchComponent implements PaymentComponent {
     public void notify(String eventType, Tab tab) {
         switch (eventType) {
             case "addStarted" -> handleAddStarted(tab);
-            case "addEnded" -> handleAddEnded(tab);
+            case "addEnded" -> handleAddEnded();
             case "payStarted" -> handlePayStarted(tab);
-            case "payCancel", "paySuccess" -> handlePayEnded(tab);
+            case "payCancel", "paySuccess" -> handlePayEnded();
         }
     }
 
@@ -29,7 +29,7 @@ public class PanelSwitchComponent implements PaymentComponent {
         plugin.showPanel(addProductPanel);
     }
 
-    private void handleAddEnded(Tab tab) {
+    private void handleAddEnded() {
         plugin.showTabsPanel();
     }
 
@@ -38,7 +38,7 @@ public class PanelSwitchComponent implements PaymentComponent {
         plugin.showPanel(checkoutPanel);
     }
 
-    private void handlePayEnded(Tab tab) {
+    private void handlePayEnded() {
         plugin.showTabsPanel();
     }
 }
