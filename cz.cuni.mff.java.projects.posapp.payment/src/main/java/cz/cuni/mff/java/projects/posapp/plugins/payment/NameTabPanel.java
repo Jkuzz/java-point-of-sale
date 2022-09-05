@@ -18,6 +18,10 @@ public class NameTabPanel extends JPanel implements Tab {
         return name;
     }
 
+    /**
+     * Get all the tabItems currently present in this tab's list
+     * @return the tab's items
+     */
     public ArrayList<TabItem> getTabItems() {
         return tabItems;
     }
@@ -38,12 +42,14 @@ public class NameTabPanel extends JPanel implements Tab {
     private final JButton nameButton = new JButton();
     private final JTextField nameInputField = new JTextField();
     private final NameTabAddListener nameTabAddListener = new NameTabAddListener(this);
+    private final PaymentMediator paymentMediator;
+
 
     public NameTabPanel(String name, PaymentMediator paymentMediator) {
         super(new GridBagLayout());
         this.name = name;
+        this.paymentMediator = paymentMediator;
         timeCreated = LocalDateTime.now();
-        //TODO: unsubscribe on tab removal!!
         paymentMediator.subscribe("addEnded", nameTabAddListener);
 
         setBackground(App.getColor("button"));
@@ -86,6 +92,11 @@ public class NameTabPanel extends JPanel implements Tab {
     }
 
 
+    /**
+     * Create the panel containing the payment buttons of the tab.
+     * @param paymentMediator Mediator to notify
+     * @return the panel
+     */
     private JPanel makePayButtonsPanel(PaymentMediator paymentMediator) {
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setBackground(App.getColor("button"));
@@ -110,6 +121,17 @@ public class NameTabPanel extends JPanel implements Tab {
     }
 
 
+    /**
+     * Close the tab and dispose of any connections.
+     */
+    public void close() {
+        paymentMediator.unsubscribe("addEnded", nameTabAddListener);
+    }
+
+
+    /**
+     * Toggle the tab name button to the name input
+     */
     private void showNameInput() {
         nameInputField.setEnabled(true);
         nameInputField.setVisible(true);
@@ -123,6 +145,9 @@ public class NameTabPanel extends JPanel implements Tab {
     }
 
 
+    /**
+     * Toggle the tab name input to the name defualt button
+     */
     private void hideNameInput() {
         nameInputField.setEnabled(false);
         nameInputField.setVisible(false);

@@ -9,10 +9,13 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 
 
+/**
+ * Panel that contains the currently opened nameTabs.
+ * Also provides the functionality to open new ones or pay for current ones.
+ */
 public class TabsViewPanel extends JPanel {
 
     private final JPanel tabsScrollPanel = new JPanel(new GridBagLayout());
-    private final PaymentSuccessHandler paymentSuccessHandler = new PaymentSuccessHandler(this);
     private final PaymentMediator paymentMediator;
     private final Plugin parent;
 
@@ -22,6 +25,7 @@ public class TabsViewPanel extends JPanel {
         this.paymentMediator = paymentMediator;
         this.setLayout(new GridBagLayout());
         tabsScrollPanel.setBackground(App.getColor("tertiary"));
+        PaymentSuccessHandler paymentSuccessHandler = new PaymentSuccessHandler(this);
         paymentMediator.subscribe("paySuccess", paymentSuccessHandler);
         makeContent();
     }
@@ -104,6 +108,7 @@ public class TabsViewPanel extends JPanel {
             try {
                 NameTabPanel nameTabPanel = (NameTabPanel) c;
                 if(nameTabPanel.getTimeCreated() == tab.getTimeCreated()) {
+                    nameTabPanel.close();
                     tabsScrollPanel.remove(nameTabPanel);
                     tabsScrollPanel.revalidate();
                     return;
