@@ -15,7 +15,7 @@ public class Plugin implements POSPlugin {
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final TabsViewPanel tabsPanel;
     private final PaymentMediator paymentMediator = new PaymentMediator(
-            "tabOpened", "tabClosed", "addStarted", "addEnded", "payStarted", "payEnded");
+            "tabOpened", "tabClosed", "addStarted", "addEnded", "payStarted", "payCancel", "paySuccess");
 
     public Plugin() {
         tabsPanel = new TabsViewPanel(this, paymentMediator);
@@ -27,7 +27,8 @@ public class Plugin implements POSPlugin {
         paymentMediator.subscribe("addStarted", panelSwitchComponent);
         paymentMediator.subscribe("addEnded", panelSwitchComponent);
         paymentMediator.subscribe("payStarted", panelSwitchComponent);
-        paymentMediator.subscribe("payEnded", panelSwitchComponent);
+        paymentMediator.subscribe("payCancel", panelSwitchComponent);
+        paymentMediator.subscribe("paySuccess", panelSwitchComponent);
     }
 
     @Override

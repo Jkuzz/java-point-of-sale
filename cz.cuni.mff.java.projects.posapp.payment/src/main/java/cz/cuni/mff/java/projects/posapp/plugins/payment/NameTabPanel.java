@@ -34,13 +34,17 @@ public class NameTabPanel extends JPanel implements Tab {
     private String name;
     private final ArrayList<TabItem> tabItems = new ArrayList<>();
 
+    private final JLabel priceLabel = new JLabel("0");
     private final JButton nameButton = new JButton();
     private final JTextField nameInputField = new JTextField();
+    private final NameTabAddListener nameTabAddListener = new NameTabAddListener(this);
 
     public NameTabPanel(String name, PaymentMediator paymentMediator) {
         super(new GridBagLayout());
         this.name = name;
         timeCreated = LocalDateTime.now();
+        //TODO: unsubscribe on tab removal!!
+        paymentMediator.subscribe("addEnded", nameTabAddListener);
 
         setBackground(App.getColor("button"));
         GridBagConstraints gbc = new GridBagConstraints();
@@ -74,11 +78,15 @@ public class NameTabPanel extends JPanel implements Tab {
 
         gbc.ipadx = 100;
         gbc.weightx = 0;
-
-        JLabel priceLabel = new JLabel("0");
         priceLabel.setForeground(App.getColor("button-text"));
         add(priceLabel, gbc);
 
+        gbc.weightx = 0;
+        add(makePayButtonsPanel(paymentMediator));
+    }
+
+
+    private JPanel makePayButtonsPanel(PaymentMediator paymentMediator) {
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setBackground(App.getColor("button"));
         JButton addButton = new JButton("Add");
@@ -87,8 +95,18 @@ public class NameTabPanel extends JPanel implements Tab {
         addButton.addActionListener(e -> paymentMediator.notify("addStarted", this));
         buttonsPanel.add(addButton);
         buttonsPanel.add(payButton);
-        gbc.weightx = 0;
-        add(buttonsPanel);
+        return buttonsPanel;
+    }
+
+
+    /**
+     * Update the price label of the nameTab panel to display the sum of the tab's tabItems.
+     */
+    void updatePrice() {
+        float currentPrice = tabItems.stream()
+                .map(t -> t.getPrice() * t.getAmount())
+                .reduce(0f, Float::sum);
+        priceLabel.setText(String.valueOf(currentPrice));
     }
 
 
