@@ -59,6 +59,8 @@ public class Plugin implements POSPlugin {
         paymentMediator.subscribe("payStarted", paymentTabSwitchListener);
         paymentMediator.subscribe("payCancel", paymentTabSwitchListener);
         paymentMediator.subscribe("paySuccess", paymentTabSwitchListener);
+
+        paymentMediator.subscribe("paySuccess", new PaymentSuccessHandler());
     }
 
 
