@@ -42,7 +42,7 @@ public class ProductGroupsModel {
     /**
      * Creates the model by querying the product groups from the database.
      */
-    public ProductGroupsModel() {
+    private ProductGroupsModel() {
         queryGroups();
     }
 
@@ -138,7 +138,7 @@ public class ProductGroupsModel {
             stmt.setInt(1, selectedGroup.getId());
         }
 
-        groups.add(new GroupComboBoxItem(name, selectedGroup.getId(), nextId));
+        groups.add(new GroupComboBoxItem(name, nextId, selectedGroup.getId()));
 
         stmt.setString(2, name);
         stmt.execute();

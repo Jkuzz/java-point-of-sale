@@ -13,9 +13,8 @@ import java.util.HashMap;
 public class Plugin implements POSPlugin {
 
     private JPanel productsPanel;
-    private JPanel newProductPanel;
-    private JPanel newGroupPanel;
     private JPanel activePanel;
+    private final JPanel modulePanel = new JPanel(new GridBagLayout());
 
 
     final ProductsTableModel productsModel = ProductsTableModel.getInstance();
@@ -36,7 +35,6 @@ public class Plugin implements POSPlugin {
 
     @Override
     public JPanel makeMainPanel() {
-        JPanel modulePanel = new JPanel(new GridBagLayout());;
         makeContent(modulePanel);
         return modulePanel;
     }
@@ -60,36 +58,24 @@ public class Plugin implements POSPlugin {
     private void makeContent(JPanel modulePanel) {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.ipadx = 10;
-        gbc.ipady = 10;
         gbc.gridx = 0;
         gbc.gridy = GridBagConstraints.RELATIVE;
         gbc.weightx = 1;
         gbc.weighty = 0;
 
         productsPanel = panelFactory.makeProductsPanel();
-        activePanel = productsPanel;
-        newProductPanel = panelFactory.makeNewProductPanel();
-        newGroupPanel = panelFactory.makeNewGroupPanel();
 
         HashMap<String, ActionListener> headerButtonDefs = new HashMap<>();
         headerButtonDefs.put("Products", e -> setActivePanel(productsPanel));
-        headerButtonDefs.put("New product", e -> setActivePanel(newProductPanel));
-        headerButtonDefs.put("New group", e -> setActivePanel(newGroupPanel));
+        headerButtonDefs.put("New product", e -> setActivePanel(panelFactory.makeNewProductPanel()));
+        headerButtonDefs.put("New group", e -> setActivePanel(panelFactory.makeNewGroupPanel()));
 
         JPanel headerPanel = DefaultComponentFactory.makeHeader(
                 getDisplayName(), new Color(132, 213, 213), headerButtonDefs
         );
         modulePanel.add(headerPanel, gbc);
 
-        gbc.weighty = 1;
-        modulePanel.add(productsPanel, gbc);
-        modulePanel.add(newProductPanel, gbc);
-        modulePanel.add(newGroupPanel, gbc);
-        newGroupPanel.setEnabled(false);
-        newGroupPanel.setVisible(false);
-        newProductPanel.setEnabled(false);
-        newProductPanel.setVisible(false);
+        setActivePanel(productsPanel);
     }
 
 
@@ -98,14 +84,25 @@ public class Plugin implements POSPlugin {
      * @param newActivePanel panel to display
      */
     private void setActivePanel(JPanel newActivePanel) {
-        if(newActivePanel == activePanel) {
-            return;
+//        if(newActivePanel == activePanel) {
+//            return;
+//        }
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridx = 0;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+
+
+        if(activePanel != null) {
+            modulePanel.remove(activePanel);
         }
-        activePanel.setEnabled(false);
-        activePanel.setVisible(false);
-        newActivePanel.setEnabled(true);
-        newActivePanel.setVisible(true);
+        modulePanel.add(newActivePanel, gbc);
         activePanel = newActivePanel;
+
+        modulePanel.revalidate();
+        modulePanel.repaint();
     }
 
 

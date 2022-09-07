@@ -19,11 +19,9 @@ public class PluginPanelFactory {
 
     private final Plugin target;
     final DBClient dbClient = new ProductsClient();
-    private final ProductGroupsModel productGroupsModel;
 
     public PluginPanelFactory(Plugin target) {
         this.target = target;
-        productGroupsModel = new ProductGroupsModel();
     }
 
     /**
@@ -79,8 +77,7 @@ public class PluginPanelFactory {
         final HashMap<String, Pair<String, String>>  foreignKeyDefs = tableDef.getForeignKeys();
 
         foreignKeyDefs.forEach((key, foreign) -> {
-            ArrayList<GroupComboBoxItem> foreignKeys = productGroupsModel.getOrderedGroups();
-
+            ArrayList<GroupComboBoxItem> foreignKeys = ProductGroupsModel.getInstance().getOrderedGroups();
             JComboBox<GroupComboBoxItem> foreignKeyInput = new JComboBox<>();
             foreignKeys.forEach(foreignKeyInput::addItem);
 
@@ -118,6 +115,13 @@ public class PluginPanelFactory {
     }
 
 
+    /**
+     * Add an input field for the input panel
+     * @param parent panel to add the input into
+     * @param label to annotate the input field with
+     * @param input component that will serve as the input for the field
+     * @param gbc of the panel, use the same if calling repeatedly
+     */
     private void addInputField(JPanel parent, String label, Component input, GridBagConstraints gbc) {
         gbc.gridx = 0;
         gbc.weightx = 0.1;
