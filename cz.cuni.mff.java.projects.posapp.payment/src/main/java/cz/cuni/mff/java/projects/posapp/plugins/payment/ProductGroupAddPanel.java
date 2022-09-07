@@ -19,6 +19,9 @@ public class ProductGroupAddPanel extends JPanel {
     private final HashMap<Integer, ProductGroupAddPanel> childPanelsCache = new HashMap<>();
     private JButton selectedProduct;
 
+    /**
+     * Default border of the product buttons
+     */
     private final static Border buttonBorder = BorderFactory.createLineBorder(
             new Color(85, 99, 255), 2);
 
@@ -92,6 +95,7 @@ public class ProductGroupAddPanel extends JPanel {
         return childPanelsCache.get(groupId);        
     }
 
+
     /**
      * Make a button for switching to another group's panel. Notifies the parent panel of the switch.
      * The parent does not hold the hierarchy, only makes the switch. The group panels hierarchy is
@@ -103,6 +107,7 @@ public class ProductGroupAddPanel extends JPanel {
     private JButton makeGroupSwitchButton(String text, ProductGroupAddPanel panelToShow) {
         JButton button = new JButton(text);
         button.addActionListener(a -> {
+            deselectProduct();
             root.showGroupAddPanel(panelToShow);
         });
         button.setBackground(new Color(178, 255, 227));
@@ -110,6 +115,7 @@ public class ProductGroupAddPanel extends JPanel {
         button.setFocusPainted(false);
         return button;
     }
+
 
     /**
      * Make a select button for a product.
@@ -126,15 +132,34 @@ public class ProductGroupAddPanel extends JPanel {
         return button;
     }
 
+
+    /**
+     * Handle the mouse click on a product button.
+     *  - first click: select the product
+     *  - second click: add the product to the tab once
+     * @param productButton that was clicked
+     * @param productFields object fields of the selected product. Retrieved from the productModel
+     */
     private void selectProduct(JButton productButton, HashMap<String, Object> productFields) {
         if(productButton.equals(selectedProduct)) {
             root.addToTab(productFields);
         } else {
-            if(selectedProduct != null) selectedProduct.setBorder(buttonBorder);
+            if(selectedProduct != null) selectedProduct.setBorder(buttonBorder);  // Reset old border to default
 
-            // TODO: Display current tab amount
             productButton.setBorder(new LineBorder(new Color(255, 0, 89), 3));
             selectedProduct = productButton;
         }
+        root.selectItem((Integer) productFields.get("id"));
+    }
+
+
+    /**
+     * Handle deselecting of the selected product if there is one.
+     * Call before leaving this group panel.
+     */
+    private void deselectProduct() {
+        if(selectedProduct != null) selectedProduct.setBorder(buttonBorder);  // Reset old border to default
+        selectedProduct = null;
+        root.selectItem(null);
     }
 }
