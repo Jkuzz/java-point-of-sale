@@ -1,5 +1,7 @@
 package cz.cuni.mff.java.projects.posapp.core;
 
+import cz.cuni.mff.java.projects.posapp.plugins.POSPlugin;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
@@ -15,7 +17,8 @@ public class App {
 
     private static HashMap<String, Color> colorScheme = ColorSchemeFactory.makeDarkScheme();
 
-    private static final HashMap<String, JPanel> appPlugins = new HashMap<>();
+    private static final HashMap<String, POSPlugin> appPlugins = new HashMap<>();
+    private static final HashMap<String, JPanel> appPluginPanels = new HashMap<>();
     private static JPanel mainViewPanel;
 
 
@@ -74,9 +77,24 @@ public class App {
      * @param pluginLoader that loaded the plugins
      */
     private static void makePluginPanels(PluginLoader pluginLoader) {
-        pluginLoader.getPlugins().forEach(posPlugin ->
-            appPlugins.put(posPlugin.getClass().getName(), posPlugin.makeMainPanel())
-        );
+        pluginLoader.getPlugins().forEach(posPlugin -> {
+            appPlugins.put(posPlugin.getClass().getName(), posPlugin);
+            appPluginPanels.put(posPlugin.getClass().getName(), posPlugin.makeMainPanel());
+        });
+    }
+
+
+    /**
+     * If the provided className plugin is loaded in the App, that plugin's message method
+     * will be called with the provided message type and payload
+     * @param pluginClass name of plugin to notify
+     * @param eventType type of event the plugin is being notified of
+     * @param payload payload of the message
+     */
+    public static void messagePlugin(String pluginClass, String eventType, Object payload) {
+        if(appPlugins.containsKey(pluginClass)) {
+            appPlugins.get(pluginClass).message(eventType, payload);
+        }
     }
 
 
@@ -90,7 +108,7 @@ public class App {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1;
         gbc.weighty = 1;
-        mainViewPanel.add(appPlugins.get(pluginClass), gbc);
+        mainViewPanel.add(appPluginPanels.get(pluginClass), gbc);
         mainViewPanel.revalidate();
         mainViewPanel.repaint();
     }

@@ -77,6 +77,17 @@ public class Plugin implements POSPlugin {
     }
 
     /**
+     * Interface method for receiving communication from other plugins.
+     *
+     * @param eventType string type of incoming event notification.
+     * @param payload   object payload accompanying the message.
+     */
+    @Override
+    public void message(String eventType, Object payload) {
+
+    }
+
+    /**
      * Create content for the module parent panel.
      */
     private void makeContent() {

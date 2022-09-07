@@ -8,25 +8,19 @@ import cz.cuni.mff.java.projects.posapp.plugins.DefaultComponentFactory;
 import cz.cuni.mff.java.projects.posapp.plugins.POSPlugin;
 
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Inventory implements POSPlugin{
 
     Database db;
-    private final DBClient dbClient = new InventoryClient();
-
 
     /**
      * Requests the database connection singleton object.
      */
     public Inventory() {
+        DBClient dbClient = new InventoryClient();
         db = Database.getInstance(new DevUser(), dbClient);
     }
 
@@ -40,6 +34,19 @@ public class Inventory implements POSPlugin{
         JPanel modulePanel = new JPanel(new GridBagLayout());
         makeContent(modulePanel);
         return modulePanel;
+    }
+
+    /**
+     * Interface method for receiving communication from other plugins.
+     *
+     * @param eventType string type of incoming event notification.
+     * @param payload   object payload accompanying the message.
+     */
+    @Override
+    public void message(String eventType, Object payload) {
+        if("paySuccess".equals(eventType)) {
+            InventoryTableModel.getInstance(db).changeInventoryStatus((HashMap<Integer, Integer>) payload);
+        }
     }
 
     /**
@@ -57,8 +64,6 @@ public class Inventory implements POSPlugin{
         gbc.weighty = 0;
 
         JPanel inventoryPanel = makeInventoryPanel();
-//        activePanel = productsPanel;
-//        newProductPanel = makeNewProductPanel();
 
         HashMap<String, ActionListener> headerButtonDefs = new HashMap<>();
         headerButtonDefs.put("Inventory", null);
@@ -71,9 +76,6 @@ public class Inventory implements POSPlugin{
 
         gbc.weighty = 1;
         modulePanel.add(inventoryPanel, gbc);
-//        modulePanel.add(newProductPanel, gbc);
-//        newProductPanel.setEnabled(false);
-//        newProductPanel.setVisible(false);
     }
 
 
@@ -91,63 +93,10 @@ public class Inventory implements POSPlugin{
         gbc.weightx = 1;
         gbc.weighty = 1;
 
-        JTable productsTable = new JTable(new ProductsTableModel(db));
+        JTable productsTable = new JTable(InventoryTableModel.getInstance(db));
         JScrollPane tableScrollPane = new JScrollPane(productsTable);
 
         panel.add(tableScrollPane, gbc);
         return panel;
-    }
-
-    /**
-     * Table model for the products view table.
-     * Requests all products from the database and stores them in memory.
-     * Provides accessor methods to the received data.
-     */
-    static class ProductsTableModel extends AbstractTableModel {
-
-        private final ArrayList<Object[]> data;
-        private final ArrayList<String> columnNames;
-
-        public ProductsTableModel(Database db) {
-            this.columnNames = new ArrayList<>();
-            this.data = new ArrayList<>();
-            ResultSet resultSet = db.query("SELECT * FROM inventory");
-            try {
-                ResultSetMetaData rsmd = resultSet.getMetaData();
-                int columnsCount = rsmd.getColumnCount();
-                for (int i = 1; i <= columnsCount; i += 1) {
-                    this.columnNames.add(rsmd.getColumnName(i));
-                }
-                while(resultSet.next()) {
-                    Object[] row = new Object[columnsCount];
-                    for(int i = 1; i <= columnsCount; i++) {
-                        row[i - 1] = resultSet.getObject(i);
-                    }
-                    data.add(row);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public int getRowCount() {
-            return data.size();
-        }
-
-        @Override
-        public int getColumnCount() {
-            return columnNames.size();
-        }
-
-        @Override
-        public String getColumnName(int col) {
-            return columnNames.get(col);
-        }
-
-        @Override
-        public Object getValueAt(int row, int col) {
-            return data.get(row)[col];
-        }
     }
 }

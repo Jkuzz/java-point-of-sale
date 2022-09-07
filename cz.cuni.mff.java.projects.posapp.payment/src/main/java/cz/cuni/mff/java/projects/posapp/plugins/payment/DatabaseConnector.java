@@ -55,7 +55,6 @@ public class DatabaseConnector {
         LocalDateTime timeOpened = tabToSave.getTimeCreated();
         Timestamp dateOpened = new Timestamp(timeOpened.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
 
-        System.out.println("Saving tab " + tabToSave.getTabName() + " to the DB.");
         String query = "INSERT INTO `transactions` (`id`, `price`, `time_opened`, `time_closed`) VALUES (NULL, ?, ?, NULL);";
 
         try {

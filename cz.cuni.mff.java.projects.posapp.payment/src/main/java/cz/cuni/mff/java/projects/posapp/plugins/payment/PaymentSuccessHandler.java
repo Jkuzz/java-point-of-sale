@@ -1,5 +1,14 @@
 package cz.cuni.mff.java.projects.posapp.plugins.payment;
 
+import cz.cuni.mff.java.projects.posapp.core.App;
+
+import java.util.HashMap;
+import java.util.Optional;
+
+
+/**
+ * Handles the database and display events that occur when the tab payment succeeds.
+ */
 public class PaymentSuccessHandler implements PaymentComponent {
 
     private final TabsViewPanel viewPanel;
@@ -17,7 +26,7 @@ public class PaymentSuccessHandler implements PaymentComponent {
     @Override
     public void notify(String eventType, Tab tab) {
         switch(eventType) {
-            case "paySuccess" ->handlePaySuccess(tab);
+            case "paySuccess" -> handlePaySuccess(tab);
         }
     }
 
@@ -28,6 +37,26 @@ public class PaymentSuccessHandler implements PaymentComponent {
     private void handlePaySuccess(Tab tab) {
         if(DatabaseConnector.getInstance().savePayment(tab)) {
             viewPanel.deleteTab(tab);
+
+            Optional<Module> module = ModuleLayer.boot().findModule("cz.cuni.mff.java.projects.posapp.inventory");
+            if(module.isPresent()) {
+                notifyInventoryPlugin(tab);
+            }
         }
+    }
+
+    /**
+     * Uses the App.messagePlugin() channel of communication to notify the Inventory plugin of a sale.
+     * @param tab to save
+     */
+    private void notifyInventoryPlugin(Tab tab) {
+        HashMap<Integer, Integer> productsChanged = new HashMap<>();
+        // For each product, message indicating id and how many were sold.
+        tab.getTabItems().forEach(t -> productsChanged.put(t.getProductId(), -1 * t.getAmount()));
+        App.messagePlugin(
+                "cz.cuni.mff.java.projects.posapp.plugins.inventory.Inventory",
+                "paySuccess",
+                productsChanged
+        );
     }
 }

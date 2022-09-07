@@ -1,9 +1,12 @@
 package cz.cuni.mff.java.projects.posapp.plugins.payment;
 
+import cz.cuni.mff.java.projects.posapp.core.App;
 import cz.cuni.mff.java.projects.posapp.plugins.POSPlugin;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Optional;
 
 
 /**
@@ -40,6 +43,17 @@ public class Plugin implements POSPlugin {
     public JPanel makeMainPanel() {
         rootPanel.add(tabsPanel, gbc);
         return rootPanel;
+    }
+
+    /**
+     * Interface method for receiving communication from other plugins.
+     *
+     * @param eventType string type of incoming event notification.
+     * @param payload   object payload accompanying the message.
+     */
+    @Override
+    public void message(String eventType, Object payload) {
+
     }
 
     public PaymentMediator getPaymentMediator() {
