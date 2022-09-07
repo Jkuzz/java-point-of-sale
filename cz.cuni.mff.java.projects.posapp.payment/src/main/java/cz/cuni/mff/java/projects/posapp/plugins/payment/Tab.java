@@ -10,4 +10,5 @@ public interface Tab {
     Float getTotalCost();
     void addTabItem(TabItem item);
     void removeTabItem(TabItem item);
+    void clearTabItems();
 }

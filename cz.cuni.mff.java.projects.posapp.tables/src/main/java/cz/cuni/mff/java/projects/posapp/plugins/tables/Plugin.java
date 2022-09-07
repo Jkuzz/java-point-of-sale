@@ -3,6 +3,8 @@ package cz.cuni.mff.java.projects.posapp.plugins.tables;
 import cz.cuni.mff.java.projects.posapp.core.App;
 import cz.cuni.mff.java.projects.posapp.plugins.DefaultComponentFactory;
 import cz.cuni.mff.java.projects.posapp.plugins.POSPlugin;
+import cz.cuni.mff.java.projects.posapp.plugins.payment.PaymentMediator;
+import cz.cuni.mff.java.projects.posapp.plugins.tables.payment.PaymentTabSwitchListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,18 +15,50 @@ import java.util.HashMap;
 
 public class Plugin implements POSPlugin {
 
+    public JPanel getActivePanel() {
+        return activePanel;
+    }
+
+    /**
+     * The currently active panel that is being displayed in the modulePanel
+     */
     private JPanel activePanel;
+
+    /**
+     * Panel containing the tables view
+     */
     private JPanel tablesPanel;
+
+    /**
+     * Panel providing tables editing functionality
+     */
     private JPanel editPanel;
+
+    /**
+     * JPanel displaying the header and the module content.
+     * Swap the active view by adding and removing the JPanel here below the header.
+     */
+    private JPanel modulePanel;
+
+
     private final JLayeredPane editCanvasPanel = new JLayeredPane();
     private MouseAdapter canvasMouseAdapter;
     private KeyListener canvasKeyListener;
+
+    private final PaymentMediator paymentMediator = new PaymentMediator(
+            "addStarted", "addEnded", "payStarted", "payCancel", "paySuccess");
 
     private final TablesModel tablesModel = new TablesModel(
             "tableAdded", "tableRemoved", "tablesSaved", "tablesLoaded");
 
     public Plugin() {
         editCanvasPanel.setLayout(null);
+        PaymentTabSwitchListener paymentTabSwitchListener = new PaymentTabSwitchListener(this, paymentMediator);
+        paymentMediator.subscribe("addStarted", paymentTabSwitchListener);
+        paymentMediator.subscribe("addEnded", paymentTabSwitchListener);
+        paymentMediator.subscribe("payStarted", paymentTabSwitchListener);
+        paymentMediator.subscribe("payCancel", paymentTabSwitchListener);
+        paymentMediator.subscribe("paySuccess", paymentTabSwitchListener);
     }
 
 
@@ -36,17 +70,16 @@ public class Plugin implements POSPlugin {
 
     @Override
     public JPanel makeMainPanel() {
-        JPanel modulePanel = new JPanel(new GridBagLayout());
-        makeContent(modulePanel);
+        modulePanel = new JPanel(new GridBagLayout());
+        makeContent();
         tablesModel.loadTables();
         return modulePanel;
     }
 
     /**
-     * Create content for the provided module parent panel.
-     * @param modulePanel panel to insert content into
+     * Create content for the module parent panel.
      */
-    private void makeContent(JPanel modulePanel) {
+    private void makeContent() {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridx = 0;
@@ -55,8 +88,8 @@ public class Plugin implements POSPlugin {
         gbc.weighty = 0;
 
         tablesPanel = makeTablesPanel();
-        activePanel = tablesPanel;
         editPanel = makeEditPanel();
+        activePanel = tablesPanel;
 
         HashMap<String, ActionListener> headerButtonDefs = new HashMap<>();
         headerButtonDefs.put("Tables", e -> setActivePanel(tablesPanel));
@@ -69,9 +102,6 @@ public class Plugin implements POSPlugin {
 
         gbc.weighty = 1;
         modulePanel.add(tablesPanel, gbc);
-        modulePanel.add(editPanel, gbc);
-        editPanel.setEnabled(false);
-        editPanel.setVisible(false);
     }
 
 
@@ -94,7 +124,7 @@ public class Plugin implements POSPlugin {
         viewCanvasPanel.setLayout(null);
         panel.add(viewCanvasPanel, gbc);
 
-        TableViewListener listener = new TableViewListener(viewCanvasPanel);
+        TableViewListener listener = new TableViewListener(viewCanvasPanel, this);
         tablesModel.subscribe("tablesSaved", listener);
         tablesModel.subscribe("tablesLoaded", listener);
         return panel;
@@ -157,7 +187,6 @@ public class Plugin implements POSPlugin {
         gbc.gridy = GridBagConstraints.RELATIVE;
 
         JButton rectButton = new JButton("Rect");
-//        JButton circleButton = new JButton("Circ");
         JButton moveButton = new JButton("Move");
         JButton saveButton = new JButton("Save");
 
@@ -179,7 +208,6 @@ public class Plugin implements POSPlugin {
         saveButton.addActionListener(e -> tablesModel.saveTables());
 
         sidebarPanel.add(rectButton, gbc);
-//        sidebarPanel.add(circleButton, gbc);
         sidebarPanel.add(moveButton, gbc);
 
         rectButton.doClick();  // Initialise editor with the rectangle tool
@@ -197,15 +225,29 @@ public class Plugin implements POSPlugin {
      * Set the selected panel as the displayed panel (unless it is already active).
      * @param newActivePanel panel to display
      */
-    private void setActivePanel(JPanel newActivePanel) {
+    public void setActivePanel(JPanel newActivePanel) {
         if(newActivePanel == activePanel) {
             return;
         }
-        activePanel.setEnabled(false);
-        activePanel.setVisible(false);
-        newActivePanel.setEnabled(true);
-        newActivePanel.setVisible(true);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridx = 0;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+
+        modulePanel.remove(activePanel);
+        modulePanel.add(newActivePanel, gbc);
+        modulePanel.revalidate();
+        modulePanel.repaint();
         activePanel = newActivePanel;
+    }
+
+    /**
+     * Reset the active panel to show the default tables view;
+     */
+    public void resetActivePanel() {
+        setActivePanel(tablesPanel);
     }
 
 
@@ -238,5 +280,9 @@ public class Plugin implements POSPlugin {
         canvasMouseAdapter = newAdapter;
         editCanvasPanel.addMouseListener(newAdapter);
         editCanvasPanel.addMouseMotionListener(newAdapter);
+    }
+
+    public PaymentMediator getPaymentMediator() {
+        return paymentMediator;
     }
 }

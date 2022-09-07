@@ -1,5 +1,8 @@
 package cz.cuni.mff.java.projects.posapp.plugins.tables;
 
+import cz.cuni.mff.java.projects.posapp.plugins.payment.Tab;
+import cz.cuni.mff.java.projects.posapp.plugins.tables.payment.TableTab;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -7,6 +10,7 @@ public class Table extends JPanel implements Prototype {
 
     private final boolean interactable;
     public final int id;
+    private final TableTab tableTab;
 
     public boolean isSelected() {
         return selected;
@@ -30,16 +34,8 @@ public class Table extends JPanel implements Prototype {
         setBackground(bgColor);
         setBounds(rectangle);
         interactable = interact;
+        tableTab = new TableTab(id);
     }
-
-//    public Table(Point centre, double radius, boolean interact, Color bgColor) {
-//        panel = new CirclePanel();
-//        panel.setBounds(circleToRectangle(centre, radius));
-//        panel.setOpaque(false);
-//        panel.setBackground(bgColor);
-//        interactable = interact;
-//    }
-
 
     /**
      * Toggle the selection of the table. Handles highlighting.
@@ -55,15 +51,6 @@ public class Table extends JPanel implements Prototype {
     }
 
 
-    public static Rectangle circleToRectangle(Point centre, double radius) {
-        return new Rectangle(
-                (int) (centre.x - radius),
-                (int) (centre.y - radius),
-                (int) (radius * 2),
-                (int) (radius * 2)
-        );
-    }
-
     /**
      * Clone the table panel using the Protoype pattern. Use this to make a copy of
      * the table object for multiple windows. DO NOT USE FOR EDITOR, will cause an issue with
@@ -75,5 +62,9 @@ public class Table extends JPanel implements Prototype {
         Rectangle newBounds = getBounds();
         newBounds.translate(20, 20);
         return new Table(newBounds, interactable, getBackground(), id);
+    }
+
+    public TableTab getTableTab() {
+        return tableTab;
     }
 }

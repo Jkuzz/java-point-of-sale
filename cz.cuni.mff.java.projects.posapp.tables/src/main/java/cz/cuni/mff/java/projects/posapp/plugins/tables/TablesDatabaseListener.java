@@ -42,7 +42,6 @@ public class TablesDatabaseListener implements TableChangeListener {
      * @param tables to save to database
      */
     private void saveTables(ArrayList<Table> tables) {
-        System.out.println("Saving tables to database:");
         ArrayList<String> transactionQueries = new ArrayList<>();
         transactionQueries.add("DELETE FROM tables;");
         StringBuilder queryBuilder = new StringBuilder(
@@ -51,11 +50,10 @@ public class TablesDatabaseListener implements TableChangeListener {
 
         ArrayList<String> queryTables = new ArrayList<>();
         tables.forEach(table -> {
-            System.out.println(table);
             Rectangle bounds = table.getBounds();
             int zIndex = canvasPanel.getPosition(table); // 0 = in front
             // (id, x, y, z, width, height, interact)
-            queryTables.add("( " +
+            queryTables.add("(" +
                     table.id + ", " +
                     bounds.x + ", " +
                     bounds.y + ", " +

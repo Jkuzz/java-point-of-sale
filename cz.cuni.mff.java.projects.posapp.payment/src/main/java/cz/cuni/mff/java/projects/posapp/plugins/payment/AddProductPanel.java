@@ -38,8 +38,31 @@ public class AddProductPanel extends JPanel {
                 new Color(200, 200, 100),buttonDefs);
         add(headerPanel, gbc);
 
+        add(makeSelectedItemDisplay(), gbc);
+
         gbc.weighty = 1;
         add(makeAddPanel(), gbc);
+    }
+
+    private JPanel makeSelectedItemDisplay() {
+        JPanel itemDisplayPanel = new JPanel(new GridBagLayout());
+        itemDisplayPanel.setBackground(App.getColor("secondary"));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.ipady = 20;
+        gbc.gridy = 0;
+        gbc.gridx = GridBagConstraints.RELATIVE;
+        gbc.weightx = 1;
+        gbc.weighty = 0;
+
+        itemDisplayPanel.add(new JLabel("Test"), gbc);
+
+        return itemDisplayPanel;
+    }
+
+    void showSelectedItem(TabItem itemToShow) {
+
     }
 
     private JPanel makeAddPanel() {

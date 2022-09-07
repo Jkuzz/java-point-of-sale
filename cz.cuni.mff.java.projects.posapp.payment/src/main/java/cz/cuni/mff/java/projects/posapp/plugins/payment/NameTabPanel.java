@@ -55,6 +55,11 @@ public class NameTabPanel extends JPanel implements Tab {
         tabItems.remove(item);
     }
 
+    @Override
+    public void clearTabItems() {
+        tabItems.clear();
+    }
+
     private final LocalDateTime timeCreated;
     private String name;
     private final ArrayList<TabItem> tabItems = new ArrayList<>();

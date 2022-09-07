@@ -3,7 +3,8 @@ package cz.cuni.mff.java.projects.posapp.plugins.tables;
 import javax.swing.*;
 import java.util.ArrayList;
 
-public record TableViewListener(JLayeredPane viewCanvasPanel) implements TableChangeListener {
+
+public record TableViewListener(JLayeredPane viewCanvasPanel, Plugin plugin) implements TableChangeListener {
 
     @Override
     public void notify(String eventType, Table table) {
@@ -26,6 +27,9 @@ public record TableViewListener(JLayeredPane viewCanvasPanel) implements TableCh
         viewCanvasPanel.removeAll();
         tables.forEach(table -> {
             Table clonedTable = (Table) table.clone();
+            if(table.isInteractable()) {
+                clonedTable.addMouseListener(new TableMouseListener(clonedTable, plugin));
+            }
             viewCanvasPanel.add(clonedTable);
             viewCanvasPanel.moveToFront(clonedTable);
         });
