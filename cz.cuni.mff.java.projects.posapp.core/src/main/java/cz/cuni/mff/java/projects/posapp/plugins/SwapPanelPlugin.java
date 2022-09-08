@@ -10,6 +10,11 @@ import java.awt.*;
  */
 public abstract class SwapPanelPlugin implements POSPlugin {
 
+    /**
+     * Get the panel, which should be the one currently visible, unless swapped using a method other than
+     * by calling setActivePanel(). If another method is used, functionality will behave unexpectedly!
+     * @return the currently active panel.
+     */
     public JPanel getActivePanel() {
         return activePanel;
     }
@@ -18,6 +23,8 @@ public abstract class SwapPanelPlugin implements POSPlugin {
 
     /**
      * Set the selected panel as the displayed panel (unless it is already active).
+     * Removes the previously active panel.
+     * @param modulePanel plugin's panel to switch the active panel into. Adds to the end.
      * @param newActivePanel panel to display
      */
     public void setActivePanel(JPanel modulePanel, JPanel newActivePanel) {

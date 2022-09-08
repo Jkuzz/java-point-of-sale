@@ -7,8 +7,11 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 
-public class DefaultComponentFactory {
 
+/**
+ * Factory providing some common default UI components
+ */
+public class DefaultComponentFactory {
 
     /**
      * Default implementation of the plugin headers.

@@ -11,11 +11,15 @@ import java.util.HashMap;
  */
 public class App {
 
-    public static void setColorScheme(HashMap<String, Color> colorScheme) {
-        App.colorScheme = ColorSchemeFactory.validateScheme(colorScheme);
+    /**
+     * Set the color theme of the App.
+     * @param colorTheme new scheme
+     */
+    public static void setColorTheme(HashMap<String, Color> colorTheme) {
+        App.colorTheme = ColorThemeFactory.validateTheme(colorTheme);
     }
 
-    private static HashMap<String, Color> colorScheme = ColorSchemeFactory.makeDarkScheme();
+    private static HashMap<String, Color> colorTheme = ColorThemeFactory.makeDarkTheme();
 
     private static final HashMap<String, POSPlugin> appPlugins = new HashMap<>();
     private static final HashMap<String, JPanel> appPluginPanels = new HashMap<>();
@@ -119,7 +123,7 @@ public class App {
      * @return the color or null if not set
      */
     public static Color getColor(String key) {
-        return colorScheme.get(key);
+        return colorTheme.get(key);
     }
 
     /**

@@ -1,0 +1,8 @@
+cz.cuni.mff.java.projects.posapp.core
+cz.cuni.mff.java.projects.posapp.database
+cz.cuni.mff.java.projects.posapp.plugins
+cz.cuni.mff.java.projects.posapp.plugins.inventory
+cz.cuni.mff.java.projects.posapp.plugins.payment
+cz.cuni.mff.java.projects.posapp.plugins.products
+cz.cuni.mff.java.projects.posapp.plugins.tables
+cz.cuni.mff.java.projects.posapp.plugins.tables.payment
