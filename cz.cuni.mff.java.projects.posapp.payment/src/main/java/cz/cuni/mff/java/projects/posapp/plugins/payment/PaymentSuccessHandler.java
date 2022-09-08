@@ -2,6 +2,7 @@ package cz.cuni.mff.java.projects.posapp.plugins.payment;
 
 import cz.cuni.mff.java.projects.posapp.core.App;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -50,9 +51,15 @@ public class PaymentSuccessHandler implements PaymentComponent {
      * @param tab to save
      */
     private void notifyInventoryPlugin(Tab tab) {
-        HashMap<Integer, Integer> productsChanged = new HashMap<>();
+        ArrayList<HashMap<String, Object>> productsChanged = new ArrayList<>();
         // For each product, message indicating id and how many were sold.
-        tab.getTabItems().forEach(t -> productsChanged.put(t.getProductId(), -1 * t.getAmount()));
+        tab.getTabItems().forEach(t -> {
+            HashMap<String, Object> product = new HashMap<>();
+            product.put("id", t.getProductId());
+            product.put("amount", t.getAmount());
+            product.put("name", t.getName());
+            productsChanged.add(product);
+        });
         App.messagePlugin(
                 "cz.cuni.mff.java.projects.posapp.plugins.inventory.Inventory",
                 "paySuccess",

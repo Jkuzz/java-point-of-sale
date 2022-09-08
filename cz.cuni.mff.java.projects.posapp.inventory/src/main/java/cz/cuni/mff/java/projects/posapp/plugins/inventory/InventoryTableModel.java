@@ -41,7 +41,8 @@ public class InventoryTableModel extends AbstractTableModel {
         this.columnNames = new ArrayList<>();
         this.data = new ArrayList<>();
 
-        ResultSet resultSet = db.query("SELECT * FROM inventory");
+        ResultSet resultSet = db.query("SELECT products.name, inventory.id, inventory.amount" +
+                " FROM inventory INNER JOIN products ON inventory.id = products.id");
         try {
             ResultSetMetaData rsmd = resultSet.getMetaData();
             int columnsCount = rsmd.getColumnCount();
@@ -60,13 +61,18 @@ public class InventoryTableModel extends AbstractTableModel {
         }
     }
 
-    public void changeInventoryStatus(HashMap<Integer, Integer> changedItems) {
+    public void changeInventoryStatus(ArrayList<HashMap<String, Object>> changedItems) {
         int idIndex = columnNames.indexOf("id");
         int amountIndex = columnNames.indexOf("amount");
+        int nameIndex = columnNames.indexOf("name");
 
         ArrayList<String> dbUpdates = new ArrayList<>();
 
-        changedItems.forEach((id, delta) -> {
+        changedItems.forEach(item -> {
+            Integer id = (Integer) item.get("id");
+            Integer delta = (Integer) item.get("amount");
+            String name = (String) item.get("name");
+
             Optional<Object[]> row = data.stream()
                     .filter(r -> r[idIndex] == id)
                     .findFirst();
@@ -74,6 +80,7 @@ public class InventoryTableModel extends AbstractTableModel {
                 Object[] newRow = new Object[getColumnCount()];
                 newRow[idIndex] = id;
                 newRow[amountIndex] = delta;
+                newRow[nameIndex] = name;
                 data.add(newRow);
                 dbUpdates.add("INSERT INTO inventory (id, amount) VALUES (" + id + ", " + delta +
                         ");");

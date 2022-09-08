@@ -1,7 +1,7 @@
 package cz.cuni.mff.java.projects.posapp.plugins.products;
 
 import cz.cuni.mff.java.projects.posapp.plugins.DefaultComponentFactory;
-import cz.cuni.mff.java.projects.posapp.plugins.POSPlugin;
+import cz.cuni.mff.java.projects.posapp.plugins.SwapPanelPlugin;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,10 +10,9 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 
-public class Plugin implements POSPlugin {
+public class Plugin extends SwapPanelPlugin {
 
     private JPanel productsPanel;
-    private JPanel activePanel;
     private final JPanel modulePanel = new JPanel(new GridBagLayout());
 
 
@@ -66,43 +65,16 @@ public class Plugin implements POSPlugin {
         productsPanel = panelFactory.makeProductsPanel();
 
         HashMap<String, ActionListener> headerButtonDefs = new HashMap<>();
-        headerButtonDefs.put("Products", e -> setActivePanel(productsPanel));
-        headerButtonDefs.put("New product", e -> setActivePanel(panelFactory.makeNewProductPanel()));
-        headerButtonDefs.put("New group", e -> setActivePanel(panelFactory.makeNewGroupPanel()));
+        headerButtonDefs.put("Products", e -> setActivePanel(modulePanel, productsPanel));
+        headerButtonDefs.put("New product", e -> setActivePanel(modulePanel, panelFactory.makeNewProductPanel()));
+        headerButtonDefs.put("New group", e -> setActivePanel(modulePanel, panelFactory.makeNewGroupPanel()));
 
         JPanel headerPanel = DefaultComponentFactory.makeHeader(
                 getDisplayName(), new Color(132, 213, 213), headerButtonDefs
         );
         modulePanel.add(headerPanel, gbc);
 
-        setActivePanel(productsPanel);
-    }
-
-
-    /**
-     * Set the selected panel as the displayed panel (unless it is already active).
-     * @param newActivePanel panel to display
-     */
-    private void setActivePanel(JPanel newActivePanel) {
-//        if(newActivePanel == activePanel) {
-//            return;
-//        }
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridx = 0;
-        gbc.gridy = GridBagConstraints.RELATIVE;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-
-
-        if(activePanel != null) {
-            modulePanel.remove(activePanel);
-        }
-        modulePanel.add(newActivePanel, gbc);
-        activePanel = newActivePanel;
-
-        modulePanel.revalidate();
-        modulePanel.repaint();
+        setActivePanel(modulePanel, productsPanel);
     }
 
 
@@ -159,6 +131,7 @@ public class Plugin implements POSPlugin {
         gbc.gridwidth = 2;
 
         JLabel errorLabel = new JLabel(message);
+        JPanel activePanel = getActivePanel();
         activePanel.add(errorLabel, gbc);
         errorLabel.setFont(new Font("SansSerif", Font.PLAIN, 18));
         errorLabel.setForeground(textColour);
