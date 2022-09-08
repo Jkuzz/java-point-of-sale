@@ -1,16 +1,11 @@
 package cz.cuni.mff.java.projects.posapp.plugins.inventory;
 
-public class ProductComboBoxItem {
+/**
+ * Objects representing inventory products. Intended to be displayed in a JComboBox to select a product.
+ */
+public record ProductComboBoxItem(String name, int id) {
     public int getId() {
         return id;
-    }
-
-    private final String name;
-    private final int id;
-
-    public ProductComboBoxItem(String name, int id) {
-        this.name = name;
-        this.id = id;
     }
 
     @Override

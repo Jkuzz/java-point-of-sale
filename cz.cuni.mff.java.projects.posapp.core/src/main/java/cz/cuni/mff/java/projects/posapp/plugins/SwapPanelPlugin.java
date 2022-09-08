@@ -3,6 +3,11 @@ package cz.cuni.mff.java.projects.posapp.plugins;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Abstract plugin base panel providing panel-swapping functionality.
+ * Use with plugins that provide multiple windows/views and need to swap between them
+ * usually with header buttons, or otherwise.
+ */
 public abstract class SwapPanelPlugin implements POSPlugin {
 
     public JPanel getActivePanel() {

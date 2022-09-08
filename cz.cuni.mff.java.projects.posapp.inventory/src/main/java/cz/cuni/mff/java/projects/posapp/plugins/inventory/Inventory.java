@@ -74,7 +74,7 @@ public class Inventory extends SwapPanelPlugin {
 
         HashMap<String, ActionListener> headerButtonDefs = new HashMap<>();
         headerButtonDefs.put("Inventory", a -> setActivePanel(modulePanel, makeInventoryPanel()));
-        headerButtonDefs.put("Add new", a -> setActivePanel(modulePanel, makeInventoryFillPanel()));
+        headerButtonDefs.put("Add", a -> setActivePanel(modulePanel, makeInventoryFillPanel()));
 
         JPanel headerPanel = DefaultComponentFactory.makeHeader(
                 getDisplayName(), new Color(255, 160, 100), headerButtonDefs
@@ -138,7 +138,7 @@ public class Inventory extends SwapPanelPlugin {
         gbc.insets = new Insets(20, 80, 20, 40);
         gbc.weightx = 0.2;
         gbc.gridx = 0;
-        JLabel label2 = new JLabel("Add");
+        JLabel label2 = new JLabel("Amount to add");
         label2.setFont(new Font("SansSerif", Font.BOLD, 18));
         panel.add(label2, gbc);
 
@@ -148,7 +148,7 @@ public class Inventory extends SwapPanelPlugin {
         JTextField amountInput = new JTextField();
         amountInput.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyTyped(KeyEvent e) {
+            public void keyTyped(KeyEvent e) {  // Only allow numbers input, including negatives
                 super.keyTyped(e);
                 if(!Character.isDigit(e.getKeyChar()) && !(amountInput.getText().length() == 0 && e.getKeyChar() == '-')) {
                     e.consume();
@@ -167,7 +167,7 @@ public class Inventory extends SwapPanelPlugin {
 
 
     /**
-     * Add the inputted product to the database and Inventory table model
+     * Add the inputted product to the database and Inventory table model. Reset input fields.
      * @param inputComboBox comboBox containing the products
      * @param amountInput amount textFields containing only valid numeric inputs
      */
@@ -175,15 +175,21 @@ public class Inventory extends SwapPanelPlugin {
         if(amountInput.getText().length() == 0) return;
 
         int productId = inputComboBox.getItemAt(inputComboBox.getSelectedIndex()).getId();
+        String productName = inputComboBox.getItemAt(inputComboBox.getSelectedIndex()).toString();
         int delta = Integer.parseInt(amountInput.getText());
 
-        System.out.println("Adding product stock: " + productId + ": " + delta);
-        // TODO: Add to Database
-        if(true) { //TODO: if database insert successful
-            // TODO: Add to Inventory table model
-            inputComboBox.setSelectedItem(0);
-            amountInput.setText("");
-        }
+        // Update inventory model
+        HashMap<String, Object> changedItem = new HashMap<>();
+        changedItem.put("id", productId);
+        changedItem.put("name", productName);
+        changedItem.put("amount", delta);
+        ArrayList<HashMap<String, Object>> changedItems = new ArrayList<>();
+        changedItems.add(changedItem);
+        InventoryTableModel.getInstance(db).changeInventoryStatus(changedItems);
+
+        // Reset inputs
+        inputComboBox.setSelectedItem(0);
+        amountInput.setText("");
     }
 
 
