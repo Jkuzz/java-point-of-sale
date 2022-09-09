@@ -3,6 +3,9 @@ package cz.cuni.mff.java.projects.posapp.plugins.tables;
 import javax.swing.*;
 import java.util.ArrayList;
 
+/**
+ * Listener handling adding and removing of Tables from the canvas panel
+ */
 public record TableEditorListener(JLayeredPane canvasPanel) implements TableChangeListener {
 
     @Override

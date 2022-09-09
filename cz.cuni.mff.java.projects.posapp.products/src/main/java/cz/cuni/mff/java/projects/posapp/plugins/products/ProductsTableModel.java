@@ -81,6 +81,11 @@ public class ProductsTableModel extends AbstractTableModel {
     }
 
 
+    /**
+     * Get all products that are present in the group as a Hashmap of fields in the model.
+     * @param groupId id of the parent group.
+     * @return list of products in that group, as a hashmap indexed by columns.
+     */
     public ArrayList<HashMap<String, Object>> getGroupProducts(Integer groupId) {
         ArrayList<HashMap<String, Object>> groupProducts = new ArrayList<>();
 
@@ -103,6 +108,7 @@ public class ProductsTableModel extends AbstractTableModel {
      * Process input text fields into prepared query and send to database.
      * Add the new product to the table model.
      * @param userInputs field name: input textField
+     * @throws SQLException when database query/connection fails
      */
     public void insertNewProduct(HashMap<String, ProductInputComponent> userInputs) throws SQLException {
         ResultSet rs = db.query("""

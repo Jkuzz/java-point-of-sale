@@ -8,6 +8,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 
+/**
+ * MouseAdapter that handles drawing rectangles onto the tables edit canvas.
+ */
 public class RectangleInputAdapter extends MouseAdapter implements KeyListener {
 
     private boolean drawing = false;
@@ -19,6 +22,12 @@ public class RectangleInputAdapter extends MouseAdapter implements KeyListener {
     private final JLayeredPane canvasPanel;
 
 
+    /**
+     * Create the adapter for the specific canvas. Informs the tablesModel to notify
+     * of drawing and completed input events
+     * @param canvasPanel to draw onto
+     * @param tablesModel to notify of canvas changes
+     */
     public RectangleInputAdapter(JLayeredPane canvasPanel, TablesModel tablesModel) {
         this.tablesModel = tablesModel;
         this.canvasPanel = canvasPanel;

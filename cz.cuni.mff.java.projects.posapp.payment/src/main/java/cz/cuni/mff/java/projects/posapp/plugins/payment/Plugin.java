@@ -1,12 +1,9 @@
 package cz.cuni.mff.java.projects.posapp.plugins.payment;
 
-import cz.cuni.mff.java.projects.posapp.core.App;
 import cz.cuni.mff.java.projects.posapp.plugins.POSPlugin;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Optional;
 
 
 /**

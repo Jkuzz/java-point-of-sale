@@ -13,8 +13,16 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.util.HashMap;
 
+/**
+ * Plugin providing a table layout, editor and table payment functionality
+ */
 public class Plugin implements POSPlugin {
 
+    /**
+     * Get the panel that is currently active in the plugin view.
+     * Use mainly to check to avoid switching to one that is already active.
+     * @return the currently active panel
+     */
     public JPanel getActivePanel() {
         return activePanel;
     }
@@ -51,6 +59,10 @@ public class Plugin implements POSPlugin {
     private final TablesModel tablesModel = new TablesModel(
             "tableAdded", "tableRemoved", "tablesSaved", "tablesLoaded");
 
+    /**
+     * Construct the panel.
+     * Importantly, subscribe Listeners to listen to Mediator events.
+     */
     public Plugin() {
         editCanvasPanel.setLayout(null);
         PaymentTabSwitchListener paymentTabSwitchListener = new PaymentTabSwitchListener(this, paymentMediator);
@@ -295,6 +307,9 @@ public class Plugin implements POSPlugin {
         editCanvasPanel.addMouseMotionListener(newAdapter);
     }
 
+    /**
+     * @return the Mediator of the plugin, mediating control flow events.
+     */
     public PaymentMediator getPaymentMediator() {
         return paymentMediator;
     }

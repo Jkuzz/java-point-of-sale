@@ -47,6 +47,11 @@ public class ProductGroupsModel {
     }
 
 
+    /**
+     * Get all groups which are children of the selected group
+     * @param parentId id of the parent group, whose children to find
+     * @return Stream containing the child groups
+     */
     public Stream<GroupComboBoxItem> getGroupChildren(Integer parentId) {
         return groups.stream().filter(g -> g.getId() != null && Objects.equals(g.getParentId(), parentId));
     }
@@ -117,6 +122,11 @@ public class ProductGroupsModel {
     }
 
 
+    /**
+     * Insert a newly added group into the model and into the database
+     * @param userInputs input components with the new group data
+     * @throws SQLException if database insert fails
+     */
     public void insertNewGroup(HashMap<String, ProductInputComponent> userInputs) throws SQLException {
         ResultSet rs = db.query("""
                 SELECT AUTO_INCREMENT

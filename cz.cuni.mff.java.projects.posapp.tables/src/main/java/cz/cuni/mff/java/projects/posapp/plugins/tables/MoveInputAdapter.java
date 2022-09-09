@@ -8,6 +8,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 
+/**
+ * MouseAdapter that handles selecting, moving, deleting and duplicating objects in the canvas.
+ */
 public class MoveInputAdapter extends MouseAdapter implements KeyListener {
 
     private final TablesModel tablesModel;
@@ -19,6 +22,12 @@ public class MoveInputAdapter extends MouseAdapter implements KeyListener {
     private Point dragMouseStart;
 
 
+    /**
+     * Create the adapter for the specific canvas. Informs the tablesModel to notify
+     * of drawing and completed input events
+     * @param canvasPanel to draw onto
+     * @param tablesModel to notify of canvas changes
+     */
     public MoveInputAdapter(JLayeredPane canvasPanel, TablesModel tablesModel) {
         this.canvasPanel = canvasPanel;
         this.tablesModel = tablesModel;

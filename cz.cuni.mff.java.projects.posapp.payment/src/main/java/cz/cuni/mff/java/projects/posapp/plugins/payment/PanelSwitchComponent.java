@@ -1,9 +1,17 @@
 package cz.cuni.mff.java.projects.posapp.plugins.payment;
 
+
+/**
+ * Mediator component to listen to add and payment events to switch the panel to the appropriate one.
+ */
 public class PanelSwitchComponent implements PaymentComponent {
 
     private final Plugin plugin;
 
+    /**
+     * Set the target plugin to change panels in.
+     * @param plugin to affect
+     */
     public PanelSwitchComponent(Plugin plugin) {
         this.plugin = plugin;
     }
