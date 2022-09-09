@@ -7,12 +7,19 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 
+/**
+ * Tab that is associated with a Table
+ */
 public class TableTab implements Tab {
 
     private final ArrayList<TabItem> tabItems = new ArrayList<>();
     private final int tableId;
     private final LocalDateTime timeOpened;
 
+    /**
+     * Create a new TableTab for a Table.
+     * @param tableId id of the table that this Tab belongs to
+     */
     public TableTab(int tableId) {
         this.tableId = tableId;
         this.timeOpened = LocalDateTime.now();

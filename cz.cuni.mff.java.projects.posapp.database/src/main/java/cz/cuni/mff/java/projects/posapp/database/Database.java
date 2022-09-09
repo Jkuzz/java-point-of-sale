@@ -6,10 +6,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+/**
+ * Singleton database connection and query component for the App
+ */
 public class Database implements AutoCloseable {
 
     Connection connection;
-
     private static Database instance;  // Singleton
 
 
@@ -156,13 +158,14 @@ public class Database implements AutoCloseable {
     }
 
 
+    /**
+     * Prepare a statement in the database connection
+     * @param statement to prepare
+     * @return the PreparedStatement
+     * @throws SQLException on database connection failure
+     */
     public PreparedStatement prepareStatement(String statement) throws SQLException {
         return connection.prepareStatement(statement);
-    }
-
-
-    public void commit() throws SQLException {
-        connection.commit();
     }
 
 

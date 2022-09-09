@@ -18,9 +18,16 @@ import java.util.List;
 /**
  * Holds the table data and dispatches events upon data change to subscribed observers.
  */
-public class TablesModel extends TableEventPublisher{
+public class TablesModel extends TableEventPublisher {
 
+    /**
+     * Colour of static tables that are NOT interactable
+     */
     public final Color baseColor = new Color(30, 30, 30);
+
+    /**
+     * Colour of tables that are interactable
+     */
     public final Color interactColor = new Color(255, 122, 122);
 
     private final ArrayList<Table> tables = new ArrayList<>();
@@ -37,6 +44,11 @@ public class TablesModel extends TableEventPublisher{
     }
 
 
+    /**
+     * Create the model holding data about the tables.
+     * Will notify subscribed listeners to changes to the table model.
+     * @param operations events that will be subscribed to and notified.
+     */
     public TablesModel(String... operations) {
         super(operations);
     }
@@ -93,6 +105,11 @@ public class TablesModel extends TableEventPublisher{
     }
 
 
+    /**
+     * Clone the table using the Prototype pattern
+     * @param cloneMe to clone
+     * @return the clone
+     */
     public Table cloneTable(Table cloneMe) {
         Rectangle newBounds = cloneMe.getBounds();
         newBounds.translate(20, 20);

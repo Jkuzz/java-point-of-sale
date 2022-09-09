@@ -9,6 +9,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 
+/**
+ * Panel representing a Tab that is associated with a name. Intended to be displayed as a row in a view.
+ */
 public class NameTabPanel extends JPanel implements Tab {
     /**
      * @return The time when the tab was created.

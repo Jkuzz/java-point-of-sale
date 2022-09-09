@@ -61,6 +61,12 @@ public class InventoryTableModel extends AbstractTableModel {
         }
     }
 
+    /**
+     * Change the status of a product's inventory.
+     * Will add or remove from the product's inventory both in the app table and the database.
+     * If the product id is not present in the database or table, it will be added.
+     * @param changedItems list of object fields that were changed. Must contain fields "id", "amount", "name"
+     */
     public void changeInventoryStatus(ArrayList<HashMap<String, Object>> changedItems) {
         int idIndex = columnNames.indexOf("id");
         int amountIndex = columnNames.indexOf("amount");
@@ -72,6 +78,10 @@ public class InventoryTableModel extends AbstractTableModel {
             Integer id = (Integer) item.get("id");
             Integer delta = (Integer) item.get("amount");
             String name = (String) item.get("name");
+
+            if(id == null || delta == null || name == null) {
+                return;
+            }
 
             Optional<Object[]> row = data.stream()
                     .filter(r -> r[idIndex] == id)

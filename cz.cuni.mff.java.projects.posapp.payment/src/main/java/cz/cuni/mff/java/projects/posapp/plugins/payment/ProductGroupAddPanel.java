@@ -12,6 +12,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
+
+/**
+ * Panel containing subgroups and products of a ProductGroup.
+ * Allows for selection of products or opening a subgroup child panel.
+ */
 public class ProductGroupAddPanel extends JPanel {
 
     private static final int GRID_COLUMNS = 8;

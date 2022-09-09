@@ -11,6 +11,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 
+/**
+ * Panel for adding products to the tab. Uses swapping ProductGroupAddPanels to traverse the product hierarchy.
+ */
 public class AddProductPanel extends JPanel {
 
     /**
@@ -29,6 +32,11 @@ public class AddProductPanel extends JPanel {
     private final Tab targetTab;
     private final PaymentMediator mediator;
 
+    /**
+     * Create the tab adding panel.
+     * @param targetTab to add products to
+     * @param mediator to inform of add events
+     */
     public AddProductPanel(Tab targetTab, PaymentMediator mediator) {
         super(new GridBagLayout());
         this.targetTab = targetTab;

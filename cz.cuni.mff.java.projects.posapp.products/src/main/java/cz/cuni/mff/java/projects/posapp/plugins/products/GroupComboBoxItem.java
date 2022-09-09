@@ -19,6 +19,13 @@ public final class GroupComboBoxItem {
         this.level = level;
     }
 
+    /**
+     * Create the GroupComboBoxItem. Used to hold information about a ProductGroup,
+     * as well as be displayed in a ComboBox for easy selection
+     * @param name of the group
+     * @param id of the group
+     * @param parentId if the group has a parent group, null if it's a root group
+     */
     public GroupComboBoxItem(String name, Integer id, Integer parentId) {
         this.name = name;
         this.id = id;

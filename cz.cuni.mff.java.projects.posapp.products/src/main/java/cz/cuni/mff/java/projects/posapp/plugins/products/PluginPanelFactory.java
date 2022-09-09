@@ -15,11 +15,18 @@ import java.util.HashMap;
 import java.util.function.Function;
 
 
+/**
+ * Factory for creating common panels in the Payment plugin.
+ */
 public class PluginPanelFactory {
 
     private final Plugin target;
     final DBClient dbClient = new ProductsClient();
 
+    /**
+     * Create the factory
+     * @param target the created panels will contain references to the parent
+     */
     public PluginPanelFactory(Plugin target) {
         this.target = target;
     }

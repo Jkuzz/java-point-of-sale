@@ -18,6 +18,11 @@ public class CheckoutPanel extends JPanel {
     private final Tab tabToPay;
     private final PaymentMediator paymentMediator;
 
+    /**
+     * Create the Checkout panel for the tab. Provides options for payment without implementation.
+     * @param tabToPay Tab to be paid
+     * @param mediator Mediator to report payment events to
+     */
     public CheckoutPanel(Tab tabToPay, PaymentMediator mediator) {
         super(new GridBagLayout());
         this.tabToPay = tabToPay;

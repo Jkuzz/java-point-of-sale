@@ -64,6 +64,10 @@ public class Table extends JPanel implements Prototype {
         return new Table(newBounds, interactable, getBackground(), id);
     }
 
+    /**
+     * Get the Tab containing items on the table's tab.
+     * @return the Tab of the table
+     */
     public TableTab getTableTab() {
         return tableTab;
     }

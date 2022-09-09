@@ -14,6 +14,11 @@ public class PaymentSuccessHandler implements PaymentComponent {
 
     private final TabsViewPanel viewPanel;
 
+    /**
+     * PaymentComponent handling when a successful event happens.
+     * Deletes the appropriate tab in the TabsViewPanel and notifies Inventory (if present)
+     * @param viewPanel panel with tabs to remove tha paid tab from
+     */
     public PaymentSuccessHandler(TabsViewPanel viewPanel) {
         this.viewPanel = viewPanel;
     }
