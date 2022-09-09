@@ -21,7 +21,7 @@ public class DatabaseConnector {
      * Obtains the database connection.
      */
     public DatabaseConnector() {
-        this.db = Database.getInstance(new DevUser(), new PaymentClient());
+        this.db = Database.getInstance(new PaymentClient());
     }
 
     /**

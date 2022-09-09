@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class TablesDatabaseListener implements TableChangeListener {
 
     private final DBClient dbClient = new TablesDBClient();
-    private final Database database = Database.getInstance(new DevUser(), dbClient);
+    private final Database database = Database.getInstance(dbClient);
     private final JLayeredPane canvasPanel;
 
     public TablesDatabaseListener(JLayeredPane canvasPanel) {

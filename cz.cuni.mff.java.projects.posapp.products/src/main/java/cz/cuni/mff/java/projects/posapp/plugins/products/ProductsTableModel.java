@@ -39,7 +39,7 @@ public class ProductsTableModel extends AbstractTableModel {
     private final ArrayList<String> columnNames;
 
     private final DBClient dbClient = new ProductsClient();
-    private final Database db = Database.getInstance(new DevUser(), dbClient);
+    private final Database db = Database.getInstance(dbClient);
 
 
     /**

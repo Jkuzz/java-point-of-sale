@@ -31,7 +31,7 @@ public class Inventory extends SwapPanelPlugin {
      */
     public Inventory() {
         DBClient dbClient = new InventoryClient();
-        db = Database.getInstance(new DevUser(), dbClient);
+        db = Database.getInstance(dbClient);
     }
 
     @Override

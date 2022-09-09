@@ -20,13 +20,12 @@ public class Database implements AutoCloseable {
      * by the plugin client are present in the database.
      *
      * TODO: Singleton -> Factory and enable multiple database connections?
-     * @param user defining database connection details
      * @param client providing table definitions to validate
      * @return the Singleton instance
      */
-    public static Database getInstance(DBUser user, DBClient client) {
+    public static Database getInstance(DBClient client) {
         if(instance == null) {
-            instance = new Database(user);
+            instance = new Database(new DevUser());
         }
         client.getTableDefs().entrySet().forEach(instance::verifyTable);
         client.getTableDefs().entrySet().forEach(instance::addForeignKeys);

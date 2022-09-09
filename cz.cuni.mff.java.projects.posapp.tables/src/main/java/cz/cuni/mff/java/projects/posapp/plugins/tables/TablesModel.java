@@ -122,7 +122,7 @@ public class TablesModel extends TableEventPublisher {
      */
     public void loadTables() {
         DBClient dbClient = new TablesDBClient();
-        Database database = Database.getInstance(new DevUser(), dbClient);
+        Database database = Database.getInstance(dbClient);
         ResultSet resultSet = database.query("SELECT * FROM tables");
 
         ArrayList<Pair<Integer, Table>> dbTables = new ArrayList<>();

@@ -35,7 +35,7 @@ public class ProductGroupsModel {
      */
     private static ProductGroupsModel instance;
 
-    private final Database db = Database.getInstance(new DevUser(), new ProductsClient());
+    private final Database db = Database.getInstance(new ProductsClient());
     private final ArrayList<GroupComboBoxItem> groups = new ArrayList<>();
 
 
