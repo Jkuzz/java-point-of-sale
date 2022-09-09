@@ -8,12 +8,20 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+
+/**
+ * Listener for inserting the new tables state to the database on the save event
+ */
 public class TablesDatabaseListener implements TableChangeListener {
 
     private final DBClient dbClient = new TablesDBClient();
     private final Database database = Database.getInstance(dbClient);
     private final JLayeredPane canvasPanel;
 
+    /**
+     * Constructor method.
+     * @param canvasPanel of the editor in which the new tables state is.
+     */
     public TablesDatabaseListener(JLayeredPane canvasPanel) {
         this.canvasPanel = canvasPanel;
     }

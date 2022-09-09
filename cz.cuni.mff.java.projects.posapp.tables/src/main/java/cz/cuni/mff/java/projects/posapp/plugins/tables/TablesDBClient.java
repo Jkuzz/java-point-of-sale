@@ -5,6 +5,10 @@ import cz.cuni.mff.java.projects.posapp.database.DBTableDef;
 
 import java.util.HashMap;
 
+
+/**
+ * DB Client for the Tables plugin. Hold table defs required by the plugin.
+ */
 public class TablesDBClient implements DBClient {
     @Override
     public HashMap<String, DBTableDef> getTableDefs() {
@@ -13,6 +17,11 @@ public class TablesDBClient implements DBClient {
         return tables;
     }
 
+
+    /**
+     * Defines the 'tables' table. Holds information about what tables exist in the Tables view.
+     * This data is changed using the editor. This serves as a persistence layer for the Tables editor.
+     */
     public static class TablesTableDef implements DBTableDef {
         @Override
         public HashMap<String, String> getTableSchema() {

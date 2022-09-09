@@ -4,6 +4,10 @@ import javax.swing.*;
 import java.util.ArrayList;
 
 
+/**
+ * Listener for the Tables save and load events.
+ * Displays the loaded/saved tables in the provided viewCanvasPanel
+ */
 public record TableViewListener(JLayeredPane viewCanvasPanel, Plugin plugin) implements TableChangeListener {
 
     @Override

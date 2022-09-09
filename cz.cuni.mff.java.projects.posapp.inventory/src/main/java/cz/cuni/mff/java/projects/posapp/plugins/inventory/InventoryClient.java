@@ -5,17 +5,23 @@ import cz.cuni.mff.java.projects.posapp.database.DBTableDef;
 
 import java.util.HashMap;
 
+/**
+ * DB Client for the Inventory plugin. Hold table defs required by the plugin.
+ */
 public class InventoryClient implements DBClient {
 
     @Override
     public HashMap<String, DBTableDef> getTableDefs() {
         HashMap<String, DBTableDef> tableDefs = new HashMap<>();
-        tableDefs.put("inventory", new InventoryClient.ProductTableDef());
+        tableDefs.put("inventory", new InventoryClient.InventoryTableDef());
         return tableDefs;
     }
 
 
-    public static class ProductTableDef implements DBTableDef {
+    /**
+     * Defines the Inventory table. Holds amounts of products in Inventory.
+     */
+    public static class InventoryTableDef implements DBTableDef {
 
         @Override
         public HashMap<String, String> getTableSchema() {

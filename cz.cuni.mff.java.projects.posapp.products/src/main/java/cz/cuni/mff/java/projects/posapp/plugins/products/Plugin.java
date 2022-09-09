@@ -10,6 +10,9 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 
+/**
+ * Plugin providing management of the store's offered products.
+ */
 public class Plugin extends SwapPanelPlugin {
 
     private JPanel productsPanel;

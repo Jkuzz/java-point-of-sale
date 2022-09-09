@@ -1,13 +1,13 @@
-package cz.cuni.mff.java.projects.posapp.plugins.tables;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
-
-public class CircleMouseAdapter extends MouseAdapter {
-
+//package cz.cuni.mff.java.projects.posapp.plugins.tables;
+//
+//import javax.swing.*;
+//import java.awt.*;
+//import java.awt.event.MouseAdapter;
+//import java.awt.event.MouseEvent;
+//
+//
+//public class CircleMouseAdapter extends MouseAdapter {
+//
 //    private boolean drawing = false;
 //    private boolean drawingInteract = false;
 //    private Point drawStart;
@@ -69,4 +69,4 @@ public class CircleMouseAdapter extends MouseAdapter {
 //                radius * 2
 //        );
 //    }
-}
+//}

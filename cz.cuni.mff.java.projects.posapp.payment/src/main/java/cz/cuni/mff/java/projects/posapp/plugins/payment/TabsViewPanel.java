@@ -17,11 +17,13 @@ public class TabsViewPanel extends JPanel {
 
     private final JPanel tabsScrollPanel = new JPanel(new GridBagLayout());
     private final PaymentMediator paymentMediator;
-    private final Plugin parent;
 
 
-    public TabsViewPanel(Plugin parent, PaymentMediator paymentMediator) {
-        this.parent = parent;
+    /**
+     * Construct the panel and subscribe to the Mediator.
+     * @param paymentMediator to communicate about tab events with
+     */
+    public TabsViewPanel(PaymentMediator paymentMediator) {
         this.paymentMediator = paymentMediator;
         this.setLayout(new GridBagLayout());
         tabsScrollPanel.setBackground(App.getColor("tertiary"));

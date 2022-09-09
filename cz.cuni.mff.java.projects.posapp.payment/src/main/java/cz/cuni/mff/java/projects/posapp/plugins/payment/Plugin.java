@@ -17,8 +17,11 @@ public class Plugin implements POSPlugin {
     private final PaymentMediator paymentMediator = new PaymentMediator(
             "tabOpened", "tabClosed", "addStarted", "addEnded", "payStarted", "payCancel", "paySuccess");
 
+    /**
+     * Initialise the plugin and setup the Mediator.
+     */
     public Plugin() {
-        tabsPanel = new TabsViewPanel(this, paymentMediator);
+        tabsPanel = new TabsViewPanel(paymentMediator);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1;
         gbc.weighty = 1;
@@ -53,6 +56,9 @@ public class Plugin implements POSPlugin {
 
     }
 
+    /**
+     * @return the plugin's event Mediator object
+     */
     public PaymentMediator getPaymentMediator() {
         return paymentMediator;
     }

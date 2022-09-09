@@ -7,18 +7,24 @@ import cz.cuni.mff.java.projects.posapp.database.DBTableDef;
 import java.util.HashMap;
 
 
+/**
+ * DB Client for the Payment plugin. Hold table defs required by the plugin.
+ */
 public class PaymentClient implements DBClient {
 
     @Override
     public HashMap<String, DBTableDef> getTableDefs() {
         HashMap<String, DBTableDef> tableDefs = new HashMap<>();
-        tableDefs.put("transactions", new PaymentClient.ProductTableDef());
-        tableDefs.put("transaction_products", new PaymentClient.ProductGroupTableDef());
+        tableDefs.put("transactions", new PaymentClient.TabTableDef());
+        tableDefs.put("transaction_products", new PaymentClient.TabContentListTableDef());
         return tableDefs;
     }
 
 
-    public static class ProductTableDef implements DBTableDef {
+    /**
+     * Defines the transactions table. Holds information about successful transactions
+     */
+    public static class TabTableDef implements DBTableDef {
 
         /**
          * Define the table schema by listing columns and their data types
@@ -47,7 +53,11 @@ public class PaymentClient implements DBClient {
         }
     }
 
-    public static class ProductGroupTableDef implements DBTableDef {
+    /**
+     * Defines the transaction_products table. Holds information the contents of tabs of successful transactions.
+     * Binding table between transactions and products.
+     */
+    public static class TabContentListTableDef implements DBTableDef {
         /**
          * Defines foreign keys of the table.
          * <p>

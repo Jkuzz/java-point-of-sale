@@ -9,6 +9,10 @@ import javax.swing.*;
 import java.awt.*;
 
 
+/**
+ * Panel providing a view of the TableTab's contents and gives access to Tab actions.
+ * Reuses the Payment module's Checkout and Add panels.
+ */
 public class TableTabViewPanel extends JPanel {
     /**
      * Mediator to notify when events occur.
@@ -31,6 +35,12 @@ public class TableTabViewPanel extends JPanel {
      */
     private JPanel scrollPaneContent;
 
+
+    /**
+     * Construct the view panel and subscribe to the Mediator.
+     * @param mediator to notify of Tab events that occur
+     * @param table that was selected, whose TableTab should be viewed
+     */
     public TableTabViewPanel(PaymentMediator mediator, Table table) {
         super(new GridBagLayout());
         this.paymentMediator = mediator;

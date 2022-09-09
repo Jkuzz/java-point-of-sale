@@ -7,6 +7,9 @@ import cz.cuni.mff.java.projects.posapp.database.DBTableDef;
 import java.util.HashMap;
 
 
+/**
+ * DB Client for the Products plugin. Hold table defs required by the plugin.
+ */
 public class ProductsClient implements DBClient {
 
     @Override
@@ -18,6 +21,9 @@ public class ProductsClient implements DBClient {
     }
 
 
+    /**
+     * Defines the Products table. Holds what products are available and which group they belong to.
+     */
     public static class ProductTableDef implements DBTableDef {
 
         /**
@@ -62,6 +68,11 @@ public class ProductsClient implements DBClient {
         }
     }
 
+
+    /**
+     * Defines the Product Groups table. Holds product groups, a hierarchical structure.
+     * Products can be assigned to a product group vie foreign key.
+     */
     public static class ProductGroupTableDef implements DBTableDef {
         /**
          * Defines foreign keys of the table.
