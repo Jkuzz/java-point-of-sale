@@ -95,3 +95,10 @@ New tables are always placed on top of old ones.
 The source code is accompanied by a complete Javadoc documentation, available in the repository, or using the `javadoc` command on the deisred modules.
 
 ## Extending the application
+To extend the application, create any number of modules. To have a module appear in the App as a plugin, implement the `cz.cuni.mff.java.projects.posapp.plugins.POSPlugin` interface and have your module `provide` the implementation. When placed on the modulepath,
+the App's ServiceLoader will automatically initialise the plugin and provide it in the UI. 
+A new module must also be aded to the project's root `pom.xml` as a module.
+
+To communicate with other modules, use the `App.messagePlugin` method and provide the target's classname.
+To utilise the database module, implement the `DBClient` Interface and provide it to the `Database` singleton getter. Refer to the Database javadoc for more information.
+
