@@ -10,11 +10,17 @@ import java.awt.*;
  */
 public class Table extends JPanel implements Prototype {
 
+    /**
+     * Whether this table can be interacted with. Set and handle externally.
+     */
     private final boolean interactable;
     /**
      * ID of the table, same as in the database.
      */
     public final int id;
+    /**
+     * Tab of this table. Add items here, display this when opening the table.
+     */
     private final TableTab tableTab;
 
     /**
@@ -37,6 +43,9 @@ public class Table extends JPanel implements Prototype {
         }
     }
 
+    /**
+     * Whether this table is currently selected.
+     */
     private boolean selected;
 
     /**

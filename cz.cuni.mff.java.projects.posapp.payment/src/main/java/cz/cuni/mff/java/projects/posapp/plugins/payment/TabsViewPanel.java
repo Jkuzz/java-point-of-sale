@@ -15,7 +15,13 @@ import java.util.HashMap;
  */
 public class TabsViewPanel extends JPanel {
 
+    /**
+     * Panel that will be placed inside the scroll pane. Place content here.
+     */
     private final JPanel tabsScrollPanel = new JPanel(new GridBagLayout());
+    /**
+     * Mediator to subscribe to and notify of a Tab events
+     */
     private final PaymentMediator paymentMediator;
 
 

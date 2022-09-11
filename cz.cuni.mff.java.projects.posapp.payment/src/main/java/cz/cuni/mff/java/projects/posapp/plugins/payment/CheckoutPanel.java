@@ -15,7 +15,14 @@ import java.util.HashMap;
  */
 public class CheckoutPanel extends JPanel {
 
+    /**
+     * The Tab that is being paid with this checkout panel instance.
+     */
     private final Tab tabToPay;
+
+    /**
+     * Mediator to notify of a successful or canceled payment
+     */
     private final PaymentMediator paymentMediator;
 
     /**

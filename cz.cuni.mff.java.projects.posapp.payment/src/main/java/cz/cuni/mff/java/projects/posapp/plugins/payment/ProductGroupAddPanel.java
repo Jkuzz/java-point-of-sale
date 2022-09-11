@@ -20,8 +20,20 @@ import java.util.stream.Stream;
 public class ProductGroupAddPanel extends JPanel {
 
     private static final int GRID_COLUMNS = 8;
+
+    /**
+     * The parent AddProductPanel. Handles swapping ProductGroupAddPanel so must be referenced.
+     */
     private final AddProductPanel root;
+
+    /**
+     * Cache storing child group's panels to avoid creating them every time the hierarchy is moved in.
+     */
     private final HashMap<Integer, ProductGroupAddPanel> childPanelsCache = new HashMap<>();
+
+    /**
+     * The product button that was pressed last. Compare with this for "double click confirmation"
+     */
     private JButton selectedProduct;
 
     /**

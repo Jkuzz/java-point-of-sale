@@ -30,6 +30,9 @@ public class AddProductPanel extends JPanel {
      * Tab to which this addPanel is adding
      */
     private final Tab targetTab;
+    /**
+     * Mediator to notify when add is complete.
+     */
     private final PaymentMediator mediator;
 
     /**

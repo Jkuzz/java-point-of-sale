@@ -32,8 +32,17 @@ public class InventoryTableModel extends AbstractTableModel {
     }
     private static InventoryTableModel instance;
 
+    /**
+     * Database instance - connection to DB via Database module
+     */
     private final Database db;
+    /**
+     * Content rows of the table model. Must be same width as columnNames
+     */
     private final ArrayList<Object[]> data;
+    /**
+     * Names of columns of the table model
+     */
     private final ArrayList<String> columnNames;
 
     private InventoryTableModel(Database db) {

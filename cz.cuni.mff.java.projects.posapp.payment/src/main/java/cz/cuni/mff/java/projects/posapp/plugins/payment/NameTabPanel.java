@@ -63,14 +63,45 @@ public class NameTabPanel extends JPanel implements Tab {
         tabItems.clear();
     }
 
+    /**
+     * When this tab was created
+     */
     private final LocalDateTime timeCreated;
+
+    /**
+     * Name of the tab. Either Name or Table or whatever. This will be shown to user in some places.
+     */
     private String name;
+
+    /**
+     * List of TabItems that are in the Tab. These must be paid for by the customer to delete the tab.
+     */
     private final ArrayList<TabItem> tabItems = new ArrayList<>();
 
+    /**
+     * Label showing the total price of the tab. Update when changing tab contents with new text.
+     */
     private final JLabel priceLabel = new JLabel("0");
+
+    /**
+     * Button showing the name of the tab. Swap with nameInputField on click.
+     */
     private final JButton nameButton = new JButton();
+
+    /**
+     * Text field for inputting a new name. Replace with the altered button on confirm.
+     */
     private final JTextField nameInputField = new JTextField();
+
+    /**
+     * Listens to the mediator for a new tab event and handles itm adding a NameTab to the panel.
+     */
     private final NameTabAddListener nameTabAddListener = new NameTabAddListener(this);
+
+    /**
+     * Mediator of the Payment tab. Components will handle events,
+     * therefore only notifying the mediator to start an event is sufficient.
+     */
     private final PaymentMediator paymentMediator;
 
 

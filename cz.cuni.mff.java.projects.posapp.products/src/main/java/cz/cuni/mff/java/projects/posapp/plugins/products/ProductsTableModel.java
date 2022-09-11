@@ -1,8 +1,6 @@
 package cz.cuni.mff.java.projects.posapp.plugins.products;
 
-import cz.cuni.mff.java.projects.posapp.database.DBClient;
 import cz.cuni.mff.java.projects.posapp.database.Database;
-import cz.cuni.mff.java.projects.posapp.database.DevUser;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -35,11 +33,20 @@ public class ProductsTableModel extends AbstractTableModel {
      */
     private static ProductsTableModel instance;
 
+    /**
+     * Content rows of the table model. Must be same width as columnNames
+     */
     private final ArrayList<Object[]> data;
+
+    /**
+     * Names of columns of the table model
+     */
     private final ArrayList<String> columnNames;
 
-    private final DBClient dbClient = new ProductsClient();
-    private final Database db = Database.getInstance(dbClient);
+    /**
+     * Database instance - connection to DB via Database module
+     */
+    private final Database db = Database.getInstance(new ProductsClient());
 
 
     /**
