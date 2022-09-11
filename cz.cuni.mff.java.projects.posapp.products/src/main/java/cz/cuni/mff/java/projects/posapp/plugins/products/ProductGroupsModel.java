@@ -4,6 +4,7 @@ import cz.cuni.mff.java.projects.posapp.database.Database;
 import cz.cuni.mff.java.projects.posapp.database.DevUser;
 
 import javax.swing.*;
+import java.security.InvalidParameterException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -128,6 +129,10 @@ public class ProductGroupsModel {
      * @throws SQLException if database insert fails
      */
     public void insertNewGroup(HashMap<String, ProductInputComponent> userInputs) throws SQLException {
+
+        String name = userInputs.get("name").getTextInput().getText();
+        if(name.length() == 0) throw new InvalidParameterException("Group name is empty!");
+
         ResultSet rs = db.query("""
                 SELECT AUTO_INCREMENT
                 FROM information_schema.tables
@@ -140,7 +145,6 @@ public class ProductGroupsModel {
         GroupComboBoxItem selectedGroup = groupInput.getItemAt(groupInput.getSelectedIndex());
 
         String query = "INSERT INTO `product_groups` (`parent_id`, `name`, `id`) VALUES (?, ?, NULL);";
-        String name = userInputs.get("name").getTextInput().getText();
         PreparedStatement stmt = db.prepareStatement(query);
         if(selectedGroup.getId() == null) {
             stmt.setNull(1, Types.INTEGER);

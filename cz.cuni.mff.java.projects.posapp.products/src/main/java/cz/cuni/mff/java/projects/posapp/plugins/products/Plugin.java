@@ -6,6 +6,7 @@ import cz.cuni.mff.java.projects.posapp.plugins.SwapPanelPlugin;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.security.InvalidParameterException;
 import java.sql.SQLException;
 import java.util.HashMap;
 
@@ -109,8 +110,8 @@ public class Plugin extends SwapPanelPlugin {
         } catch (SQLException e) {
             displayMessage(e.getMessage(), new Color(255, 50, 50));
             return;
-        } catch (NumberFormatException e) {
-            displayMessage("Invalid integer field input!", new Color(255, 50, 50));
+        } catch (InvalidParameterException e) {
+            displayMessage("Enter a valid group!", new Color(255, 50, 50));
             return;
         }
         displayMessage("Product Group added successfully", new Color(17, 255, 0));

@@ -38,7 +38,7 @@ public class PluginPanelFactory {
     JPanel makeNewGroupPanel() {
         return makeDBAddPanel(
                 dbClient.getTableDefs().get("product_groups"),
-                userInputs -> e -> target.insertNewProductGroup(userInputs)
+                userInputs ->  e -> target.insertNewProductGroup(userInputs)
         );
     }
 
@@ -82,15 +82,12 @@ public class PluginPanelFactory {
 
         final HashMap<String, ProductInputComponent> userInputs = new HashMap<>();
         final HashMap<String, Pair<String, String>>  foreignKeyDefs = tableDef.getForeignKeys();
+        JComboBox<GroupComboBoxItem> parentGroupInput = new JComboBox<>();
 
-        foreignKeyDefs.forEach((key, foreign) -> {
-            ArrayList<GroupComboBoxItem> foreignKeys = ProductGroupsModel.getInstance().getOrderedGroups();
-            JComboBox<GroupComboBoxItem> foreignKeyInput = new JComboBox<>();
-            foreignKeys.forEach(foreignKeyInput::addItem);
+        fillGroupComboSelection(parentGroupInput);
+        addInputField(panel, "parent_id", parentGroupInput, gbc);
+        userInputs.put("parent_id", new ProductInputComponent(parentGroupInput));
 
-            addInputField(panel, key, foreignKeyInput, gbc);
-            userInputs.put(key, new ProductInputComponent(foreignKeyInput));
-        });
 
         tableDef.getTableSchema().forEach((name, type) -> {
             // Don't create input for primary key -> will be auto-incremented or added programmatically otherwise
@@ -115,10 +112,27 @@ public class PluginPanelFactory {
         });
 
         JButton confirmButton = new JButton("Confirm");
-        confirmButton.addActionListener(makeActionListener.apply(userInputs));
+        ActionListener actionListener = makeActionListener.apply(userInputs);
+        confirmButton.addActionListener(a -> {
+            actionListener.actionPerformed(a);
+            fillGroupComboSelection(parentGroupInput);
+        });
         panel.add(confirmButton, gbc);
 
         return panel;
+    }
+
+
+    /**
+     * Fill the ComboBox input's list with the current state of the groups' hierarchy,
+     * as is currently present in the groups model. Clears the list first.
+     * @param parentGroupInput whose list to update.
+     */
+    private void fillGroupComboSelection(JComboBox<GroupComboBoxItem> parentGroupInput) {
+        System.out.println("Filling ComboBox");
+        parentGroupInput.removeAllItems();
+        ArrayList<GroupComboBoxItem> foreignKeys = ProductGroupsModel.getInstance().getOrderedGroups();
+        foreignKeys.forEach(parentGroupInput::addItem);
     }
 
 
