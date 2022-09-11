@@ -10,7 +10,7 @@ To start using the application, some setup is required. Namely, the following st
 
 
 #### Database
-A database is required for the application's persistent storage. The application was developed for a MariaDB 10.4.24, although any modern MySQL database should work.
+A database is required as the application's persistent storage. The application was developed for a MariaDB 10.4.24, although any modern MySQL database should work.
  - Create a database user with the `SELECT, INSERT, UPDATE, CREATE, ALTER`	privileges.
  - provide an implementation of `cz.cuni.mff.java.projects.posapp.database.DBUser` interface
  - change the `cz.cuni.mff.java.projects.posapp.database.Database` class constructor to use your implementation
@@ -28,6 +28,8 @@ The Main class is `cz.cuni.mff.java.projects.posapp.core/cz.cuni.mff.java.projec
 
 ## Base Modules
 The modularity of the application is an essential design feature. The project is split into modules, which are each discussed below.
+Of the modules discussed, only the Core module is mandataory, although it provides no user functionality on its own. 
+Add the desired modules and their dependencies to the modulepath to use them.
 
 
 ### Core module
@@ -41,7 +43,7 @@ interface for the plugin. The left sidebar allows the Core to switch between the
 
 ### Database module
 This module provides a database access to other modules. The Database class holds single connection point to the database server and all
-db communication flows through it.
+DB communication flows through it.
 
 For a plugin to retreive the database connection from this module, it must declare its required database tables programatically. 
 The module then ensures the appropriate tables exist in the DB, according to the provided definitions. This way, no database setup is required initially by the user, 
@@ -52,11 +54,12 @@ For implementing a plugin using the Database, refer to the javadoc of this modul
 
 ### Products module
 This module provides the functionality to define products and product groups. A product is an object that can be sold for some price, and is used
-by other plugins to calculate payment, inventories etc.. 
+by other plugins to calculate payment, inventories etc.. Define products in the plugin interface by filling the product information in the UI.
 
 A product group is a group that can contain products or other product groups.
 The product groups therefore create a hierarchical tree structure, with products as leaves. This hierarchy is used to structure the products
 into better manageable groups, but is ultimately optional but recommended.
+Product groups can also be created using the plugin's interface.
 
 
 ### Inventory module
@@ -73,8 +76,9 @@ Products are taken from the Products module's model. To add new products, see th
 
 The tab can finally be paid, which will clear the tab.
 The payment functionality is intentiionally omitted, as it is out of scope of this project.
-A successful payment will notify the Inventory plugin of the transaction, if it is present.
+A successful payment will notify the Inventory plugin of the transaction, if that plugin is present.
 The successful payments are stored in the database, along with the list of products that were sold.
+The payments are not available in the application, only in the database for tax reasons.
 
 
 ## Tables module
