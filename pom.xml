@@ -13,7 +13,6 @@
         <module>cz.cuni.mff.java.projects.posapp.core</module>
         <module>cz.cuni.mff.java.projects.posapp.tables</module>
         <module>cz.cuni.mff.java.projects.posapp.inventory</module>
-<!--        <module>cz.cuni.mff.java.projects.posapp.booking</module>-->
         <module>cz.cuni.mff.java.projects.posapp.database</module>
         <module>cz.cuni.mff.java.projects.posapp.products</module>
         <module>cz.cuni.mff.java.projects.posapp.payment</module>
