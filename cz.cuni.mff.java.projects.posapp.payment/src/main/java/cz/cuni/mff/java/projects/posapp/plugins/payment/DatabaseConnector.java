@@ -1,7 +1,6 @@
 package cz.cuni.mff.java.projects.posapp.plugins.payment;
 
 import cz.cuni.mff.java.projects.posapp.database.Database;
-import cz.cuni.mff.java.projects.posapp.database.DevUser;
 
 import java.sql.*;
 import java.time.LocalDateTime;

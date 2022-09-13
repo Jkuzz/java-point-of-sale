@@ -2,7 +2,6 @@ package cz.cuni.mff.java.projects.posapp.plugins.tables;
 
 import cz.cuni.mff.java.projects.posapp.database.DBClient;
 import cz.cuni.mff.java.projects.posapp.database.Database;
-import cz.cuni.mff.java.projects.posapp.database.DevUser;
 
 import javax.swing.*;
 import java.awt.*;

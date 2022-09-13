@@ -1,7 +1,6 @@
 package cz.cuni.mff.java.projects.posapp.plugins.products;
 
 import cz.cuni.mff.java.projects.posapp.database.Database;
-import cz.cuni.mff.java.projects.posapp.database.DevUser;
 
 import javax.swing.*;
 import java.security.InvalidParameterException;

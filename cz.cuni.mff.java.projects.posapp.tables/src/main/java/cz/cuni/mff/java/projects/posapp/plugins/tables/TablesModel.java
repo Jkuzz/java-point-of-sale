@@ -3,15 +3,12 @@ package cz.cuni.mff.java.projects.posapp.plugins.tables;
 import cz.cuni.mff.java.projects.posapp.core.Pair;
 import cz.cuni.mff.java.projects.posapp.database.DBClient;
 import cz.cuni.mff.java.projects.posapp.database.Database;
-import cz.cuni.mff.java.projects.posapp.database.DevUser;
 
 import java.awt.*;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 
 
