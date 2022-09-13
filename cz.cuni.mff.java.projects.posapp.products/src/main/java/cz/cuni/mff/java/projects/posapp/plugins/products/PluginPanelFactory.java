@@ -85,8 +85,8 @@ public class PluginPanelFactory {
         JComboBox<GroupComboBoxItem> parentGroupInput = new JComboBox<>();
 
         fillGroupComboSelection(parentGroupInput);
-        addInputField(panel, "parent_id", parentGroupInput, gbc);
-        userInputs.put("parent_id", new ProductInputComponent(parentGroupInput));
+        addInputField(panel, "group_id", parentGroupInput, gbc);
+        userInputs.put("group_id", new ProductInputComponent(parentGroupInput));
 
 
         tableDef.getTableSchema().forEach((name, type) -> {
@@ -129,7 +129,6 @@ public class PluginPanelFactory {
      * @param parentGroupInput whose list to update.
      */
     private void fillGroupComboSelection(JComboBox<GroupComboBoxItem> parentGroupInput) {
-        System.out.println("Filling ComboBox");
         parentGroupInput.removeAllItems();
         ArrayList<GroupComboBoxItem> foreignKeys = ProductGroupsModel.getInstance().getOrderedGroups();
         foreignKeys.forEach(parentGroupInput::addItem);
