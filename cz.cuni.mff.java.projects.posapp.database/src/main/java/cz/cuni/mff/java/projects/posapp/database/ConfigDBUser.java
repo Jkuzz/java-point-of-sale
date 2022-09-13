@@ -36,6 +36,8 @@ public class ConfigDBUser implements DBUser {
             System.out.println("The config file does not exist.");
             throw new RuntimeException("Missing configuration file!");
         }
+
+        System.out.println("Database config successfully loaded.");
     }
 
 
