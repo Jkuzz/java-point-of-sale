@@ -24,7 +24,6 @@ public class ConfigDBUser implements DBUser {
         if (cfgFile.exists()) {
             FileConfig config = FileConfig.of(cfgFile);
             config.load();
-            System.out.println(config);
 
             password = config.get("database.password");
             userName = config.get("database.user_name");
