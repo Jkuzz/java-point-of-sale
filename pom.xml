@@ -37,21 +37,69 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
-                    <version>3.0.0</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>java</goal>
-                            </goals>
-                            <configuration>
-                                <mainClass>cz.cuni.mff.java.plugins.textprocessor.impl.Main</mainClass>
-                            </configuration>
-                        </execution>
-                    </executions>
+                    <version>3.1.0</version>
                 </plugin>
 
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.3.1</version>
+                </plugin>
             </plugins>
         </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/jars</outputDirectory>
+                            <excludeGroupIds>cz.cuni.mff.java</excludeGroupIds>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.1</version>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/jars</outputDirectory>
+                </configuration>
+            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.codehaus.mojo</groupId>-->
+<!--                <artifactId>exec-maven-plugin</artifactId>-->
+<!--                <version>3.1.0</version>-->
+<!--                <configuration>-->
+<!--                    <executable>java</executable>-->
+<!--                    <arguments>-->
+<!--                        <argument>&#45;&#45;module-path</argument>-->
+<!--                        &lt;!&ndash; automatically creates the module-path using all project dependencies,-->
+<!--                             also adding the project build directory &ndash;&gt;-->
+<!--&lt;!&ndash;                        <argument>./cz.cuni.mff.java.projects.posapp.core/target/</argument>&ndash;&gt;-->
+<!--                        <modulepath/>-->
+<!--&lt;!&ndash;                        <modulepath/>&ndash;&gt;-->
+<!--                        <argument>&#45;&#45;module</argument>-->
+<!--                        <argument>cz.cuni.mff.java.projects.posapp.core/cz.cuni.mff.java.projects.posapp.core.App</argument>-->
+<!--                    </arguments>-->
+<!--                    <mainClass>cz.cuni.mff.java.projects.posapp.core/cz.cuni.mff.java.projects.posapp.core.App</mainClass>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+        </plugins>
     </build>
 
 </project>
