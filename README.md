@@ -12,8 +12,7 @@ To start using the application, some setup is required. Namely, the following st
 #### Database
 A database is required as the application's persistent storage. The application was developed for a MariaDB 10.4.24, although any modern MySQL database should work.
  - Create a database user with the `SELECT, INSERT, UPDATE, CREATE, ALTER`	privileges.
- - provide an implementation of `cz.cuni.mff.java.projects.posapp.database.DBUser` interface
- - change the `cz.cuni.mff.java.projects.posapp.database.Database` class constructor to use your implementation
+ - Set the configuration file `config.toml` to contain the correct login detail to your database user.
  
  
 #### Compilation
