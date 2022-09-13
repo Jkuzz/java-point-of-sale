@@ -17,12 +17,13 @@ A database is required as the application's persistent storage. The application 
  
  
 #### Compilation
-Simply compile the root `pom.xml` using `mvn compile`.
+Simply package the root `pom.xml` using `mvn package`. The packaged files are placed in the `/target/jars/` folders of each module.
 
 
 #### Execute
-Execute using the `java` command. Add all desired plugins to the modulepath, whilst maintaining their dependencies.
-The JDBC implementation: ConnectorJ, which will be retreived by maven is also required.
+Execute using the provided `exec.sh` script. This launches the application including all the modules. 
+
+Alternatively, execute using the `java` command. Add all desired plugins to the modulepath, whilst maintaining their dependencies.
 The Main class is `cz.cuni.mff.java.projects.posapp.core/cz.cuni.mff.java.projects.posapp.core.App`.
 
 
