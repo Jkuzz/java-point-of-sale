@@ -51,7 +51,6 @@ public class PaymentMediator {
      * @param affectedTab tab that was affected by the event
      */
     public void notify(String eventType, Tab affectedTab) {
-        System.out.println("PaymentMediator notifying: " + eventType);
         List<PaymentComponent> users = listeners.get(eventType);
         for (PaymentComponent listener : users) {
             listener.notify(eventType, affectedTab);
