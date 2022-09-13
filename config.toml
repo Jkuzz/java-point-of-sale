@@ -1,0 +1,6 @@
+# Database access login details
+
+[database]
+user_name = "javaClient"
+password = "85*uYcjQ8yUH&Bv"
+url = "jdbc:mysql://localhost/posappdb"

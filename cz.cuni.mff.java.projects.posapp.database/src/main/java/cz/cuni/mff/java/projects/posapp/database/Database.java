@@ -25,7 +25,7 @@ public class Database implements AutoCloseable {
      */
     public static Database getInstance(DBClient client) {
         if(instance == null) {
-            instance = new Database(new DevUser());
+            instance = new Database(new ConfigDBUser());
         }
         client.getTableDefs().entrySet().forEach(instance::verifyTable);
         client.getTableDefs().entrySet().forEach(instance::addForeignKeys);
